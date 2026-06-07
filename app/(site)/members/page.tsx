@@ -18,6 +18,7 @@
 import { getCollection } from "@/lib/mdx";
 import { siteConfig } from "@/lib/config";
 import PageHeader from "@/components/ui/PageHeader";
+import MemberCardModal from "@/components/ui/MemberCardModal";
 
 // Ordem de exibição dos grupos na página
 const GROUP_ORDER = [
@@ -156,7 +157,8 @@ export default async function MembersPage() {
           )}
 
           {/* ── Membros ativos agrupados por role ───────────────────────────
-              Renderiza um grupo por vez seguindo GROUP_ORDER              */}
+              Renderiza um grupo por vez seguindo GROUP_ORDER
+              Cada card usa MemberCardModal — clicável com modal de detalhes */}
           {GROUP_ORDER.some((role) => activeMembers.some((m) => m.role === role)) && (
             <section style={{ padding: "4rem 0", borderBottom: "1px solid var(--color-border)" }}>
               <h2 className="section-title" style={{ fontSize: "1.5rem" }}>
@@ -173,59 +175,32 @@ export default async function MembersPage() {
                     {/* Label do grupo — ex: "Doutorandos" */}
                     <p className="group-label">{role}s</p>
 
-                    {/* Grid de cards */}
+                    {/* Grid de cards clicáveis */}
                     <div
                       style={{
                         display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(240px, 240px))",
                         gap: "1px",
                         backgroundColor: "var(--color-border)",
                         border: "1px solid var(--color-border)",
                       }}
                     >
                       {group.map((member) => (
-                        <div
+                        <MemberCardModal
                           key={member.slug}
-                          style={{
-                            backgroundColor: "var(--color-bg-elevated)",
-                            padding: "1.5rem",
-                            transition: "background-color 0.15s ease",
-                          }}
-                          className="member-card-hover"
-                        >
-                          {/* Nome */}
-                          <p style={{ fontFamily: "var(--font-display)", fontSize: "1.05rem", fontWeight: 500, color: "var(--color-text)", marginBottom: "0.15rem" }}>
-                            {member.title as string}
-                          </p>
-
-                          {/* Área de pesquisa e bolsa */}
-                          <p style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", fontWeight: 300, lineHeight: 1.5, marginBottom: "1rem" }}>
-                            {member.research_area as string}
-                            {(member.scholarship as string | undefined) && (
-                              <>
-                                <br />
-                                <em style={{ fontSize: "0.75rem", color: "var(--color-text-subtle)" }}>
-                                  Bolsa {member.scholarship as string}
-                                  {(member.year_start as string | undefined) && ` · desde ${member.year_start as string}`}
-                                </em>
-                              </>
-                            )}
-                          </p>
-
-                          {/* Links acadêmicos */}
-                          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                            {(member.lattes as string | undefined) && (
-                              <a href={member.lattes as string} target="_blank" rel="noopener noreferrer" className="pill-link">
-                                Lattes
-                              </a>
-                            )}
-                            {(member.orcid as string | undefined) && (
-                              <a href={member.orcid as string} target="_blank" rel="noopener noreferrer" className="pill-link">
-                                ORCID
-                              </a>
-                            )}
-                          </div>
-                        </div>
+                          name={member.title as string}
+                          role={member.role as string}
+                          research_area={member.research_area as string | undefined}
+                          scholarship={member.scholarship as string | undefined}
+                          year_start={member.year_start as string | undefined}
+                          bio={member.bio as string | undefined}
+                          photo={member.photo as string | undefined}
+                          email={member.email as string | undefined}
+                          lattes={member.lattes as string | undefined}
+                          orcid={member.orcid as string | undefined}
+                          scholar={member.scholar as string | undefined}
+                          arxiv={member.arxiv as string | undefined}
+                        />
                       ))}
                     </div>
                   </div>

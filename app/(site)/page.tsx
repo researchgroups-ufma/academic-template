@@ -6,40 +6,52 @@
  *
  * Seções:
  *   1. Hero         — fullscreen com carrossel de imagens e logo SVG
- *   2. Pesquisa     — linhas de pesquisa + projetos em destaque
+ *   2. Pesquisa     — linhas de pesquisa + destaques (se houver)
  *   3. Page Cards   — atalhos para Membros e Publicações
  *   4. Coordenador  — bio e foto do coordenador do laboratório
  */
 
 import Hero from "@/components/layout/Hero";
 import ResearchSection from "@/components/sections/ResearchSection";
+import HighlightsSection from "@/components/sections/HighlightsSection";
 import PageCards from "@/components/sections/PageCards";
 import CoordinatorSection from "@/components/sections/CoordinatorSection";
 import { getSingleFile, getCollection } from "@/lib/mdx";
 
 export default async function HomePage() {
 
-  // ── Dados do Hero — lidos de content/about/index.md ──────────────────────
+  // ── Dados do Hero ─────────────────────────────────────────────────────────
   const about = await getSingleFile("about/index.md");
 
-  // Normaliza hero_images para array — suporta string única ou array
   const heroImages: string[] = Array.isArray(about.hero_images)
     ? (about.hero_images as string[])
     : about.hero_images
     ? [about.hero_images as string]
     : ["/uploads/hero1.webp"];
 
-  // ── Linhas de pesquisa — lidas de content/research/ ──────────────────────
+  // ── Linhas de pesquisa ────────────────────────────────────────────────────
   const allResearch = await getCollection("research");
-
-  // Remove o placeholder gerado pelo scaffolding (slug "placeholder")
   const researchLines = allResearch.filter((r) => r.slug !== "placeholder") as {
     slug: string;
     title: string;
     summary: string;
   }[];
 
-  // ── Coordenador — primeiro membro com role "Coordenador" ─────────────────
+  // ── Destaques — ordenados pelo campo order ─────────────────────────────────
+  const allHighlights = await getCollection("highlights");
+  const highlights = allHighlights
+    .filter((h) => h.slug !== "placeholder")
+    .sort((a, b) => ((a.order as number) || 0) - ((b.order as number) || 0)) as {
+      slug: string;
+      title: string;
+      description: string;
+      image?: string;
+      image_caption?: string;
+      image_position?: "left" | "right";
+      order?: number;
+    }[];
+
+  // ── Coordenador ────────────────────────────────────────────────────────────
   const allMembers = await getCollection("members");
   const coordinator = allMembers.find((m) => m.role === "Coordenador");
 
@@ -55,10 +67,13 @@ export default async function HomePage() {
       {/* ── 2. Pesquisa ────────────────────────────────────────────────────── */}
       <ResearchSection researchLines={researchLines} />
 
-      {/* ── 3. Cards de navegação ──────────────────────────────────────────── */}
+      {/* ── 3. Destaques — só aparece se houver itens cadastrados ──────────── */}
+      <HighlightsSection highlights={highlights} />
+
+      {/* ── 4. Cards de navegação ──────────────────────────────────────────── */}
       <PageCards />
 
-      {/* ── 4. Sobre o Coordenador — só renderiza se houver um coordenador ─── */}
+      {/* ── 5. Sobre o Coordenador ─────────────────────────────────────────── */}
       {coordinator && (
         <CoordinatorSection
           name={coordinator.title as string}
