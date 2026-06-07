@@ -11,14 +11,20 @@
  *   3. Egressos           — lista com ano e instituição atual
  *   4. Colaboradores      — Colaborador Externo
  *
- * Fase 4: os cards receberão Morphing Dialog (Motion Primitives)
- * com bio completa e links acadêmicos ao clicar.
+ * Os cards usam MorphingDialog (Motion Primitives) com bio completa
+ * e links acadêmicos ao clicar.
  */
 
 import { getCollection } from "@/lib/mdx";
 import { siteConfig } from "@/lib/config";
 import PageHeader from "@/components/ui/PageHeader";
 import MemberCardModal from "@/components/ui/MemberCardModal";
+
+// Plurais irregulares — os demais recebem "s" simples
+const ROLE_PLURAL: Record<string, string> = {
+  "Pesquisador Sênior": "Pesquisadores Sênior",
+  "Iniciação Científica": "Iniciação Científica",
+};
 
 // Ordem de exibição dos grupos na página
 const GROUP_ORDER = [
@@ -121,7 +127,7 @@ export default async function MembersPage() {
 
                   {/* Bio — parágrafos separados por linha em branco no frontmatter */}
                   <div style={{ marginBottom: "1.25rem" }}>
-                    {(coordinator.bio as string).split("\n\n").map((p, i) => (
+                    {typeof coordinator.bio === "string" && coordinator.bio.split("\n\n").map((p, i) => (
                       <p key={i} style={{ fontSize: "0.92rem", lineHeight: 1.8, color: "var(--color-text-muted)", fontWeight: 300, marginBottom: "0.85rem" }}>
                         {p}
                       </p>
@@ -173,7 +179,7 @@ export default async function MembersPage() {
                 return (
                   <div key={role} style={{ marginBottom: "2.5rem" }}>
                     {/* Label do grupo — ex: "Doutorandos" */}
-                    <p className="group-label">{role}s</p>
+                    <p className="group-label">{ROLE_PLURAL[role] ?? `${role}s`}</p>
 
                     {/* Grid de cards clicáveis */}
                     <div

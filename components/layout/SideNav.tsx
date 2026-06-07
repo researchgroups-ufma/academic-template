@@ -66,6 +66,7 @@ export default function SideNav() {
             >
               <Link
                 href={link.href}
+                aria-current={isActive ? "page" : undefined}
                 style={{
                   position: "relative",
                   display: "flex",

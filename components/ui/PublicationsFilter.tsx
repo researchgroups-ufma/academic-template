@@ -78,6 +78,7 @@ export default function PublicationsFilter({ publications }: PublicationsFilterP
           <button
             key={filter.value}
             onClick={() => setActiveFilter(filter.value)}
+            aria-pressed={activeFilter === filter.value}
             style={{
               fontSize: "0.75rem",
               fontWeight: 400,

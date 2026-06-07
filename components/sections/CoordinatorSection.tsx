@@ -20,7 +20,7 @@
 
 type CoordinatorSectionProps = {
   name: string;
-  bio: string;
+  bio?: string;
   photo?: string;
   lattes?: string;
   email?: string;
@@ -62,7 +62,7 @@ export default function CoordinatorSection({
           {/* ── Texto ──────────────────────────────────────────────────────── */}
           <div>
             {/* Bio — cada parágrafo separado por \n\n no frontmatter */}
-            {bio.split("\n\n").map((paragraph, index) => (
+            {bio && bio.split("\n\n").map((paragraph, index) => (
               <p
                 key={index}
                 style={{

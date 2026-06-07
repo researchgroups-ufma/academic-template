@@ -99,7 +99,7 @@ export default async function PublicationsPage() {
               <span className="title-accent" />
 
               {theses
-                .sort((a, b) => (b.year as number) - (a.year as number))
+                .sort((a, b) => ((b.year as number) || 0) - ((a.year as number) || 0))
                 .map((thesis) => (
                   <div
                     key={thesis.slug}

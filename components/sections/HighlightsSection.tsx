@@ -57,9 +57,9 @@ export default function HighlightsSection({ highlights }: HighlightsSectionProps
                   : "none",
               }}
             >
-              {/* Imagem à esquerda */}
-              {item.image && imageOnLeft && (
-                <figure style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              {/* Imagem */}
+              {item.image && (
+                <figure style={{ display: "flex", flexDirection: "column", alignItems: "center", order: imageOnLeft ? 1 : 2 }}>
                   <img
                     src={item.image}
                     alt={item.image_caption || item.title}
@@ -108,30 +108,6 @@ export default function HighlightsSection({ highlights }: HighlightsSectionProps
                 </p>
               </div>
 
-              {/* Imagem à direita */}
-              {item.image && !imageOnLeft && (
-                <figure style={{ display: "flex", flexDirection: "column", alignItems: "center", order: 2 }}>
-                  <img
-                    src={item.image}
-                    alt={item.image_caption || item.title}
-                    style={{
-                      width: "100%",
-                      border: "1px solid var(--color-border-strong)",
-                    }}
-                  />
-                  {item.image_caption && (
-                    <figcaption style={{
-                      fontSize: "0.75rem",
-                      color: "var(--color-text-subtle)",
-                      marginTop: "0.5rem",
-                      textAlign: "center",
-                      fontStyle: "italic",
-                    }}>
-                      {item.image_caption}
-                    </figcaption>
-                  )}
-                </figure>
-              )}
             </div>
           );
         })}

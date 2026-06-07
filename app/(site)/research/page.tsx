@@ -7,7 +7,6 @@
  */
 
 import { getCollection } from "@/lib/mdx";
-import { siteConfig } from "@/lib/config";
 import PageHeader from "@/components/ui/PageHeader";
 
 export const metadata = { title: "Pesquisa" };

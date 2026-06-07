@@ -83,7 +83,7 @@ export default function Hero({ images, subtitle }: HeroProps) {
       >
         <Image
           src={images[currentIndex]}
-          alt="Imagem do laboratório"
+          alt={`Imagem do laboratório${images.length > 1 ? ` ${currentIndex + 1} de ${images.length}` : ""}`}
           fill                          /* preenche o container pai           */
           priority                      /* carrega antes das outras imagens   */
           style={{ objectFit: "cover" }} /* cobre sem distorcer               */

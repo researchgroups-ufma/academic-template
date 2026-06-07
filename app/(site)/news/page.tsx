@@ -8,7 +8,6 @@
  */
 
 import { getCollection, formatDate } from "@/lib/mdx";
-import { siteConfig } from "@/lib/config";
 import PageHeader from "@/components/ui/PageHeader";
 
 export const metadata = { title: "Notícias" };
@@ -20,9 +19,9 @@ export default async function NewsPage() {
   const news = allNews
     .filter((n) => n.slug !== "placeholder")
     .sort((a, b) => {
-      const dateA = new Date(a.date as string).getTime();
-      const dateB = new Date(b.date as string).getTime();
-      return dateB - dateA;
+      const dateA = a.date ? new Date(a.date as string).getTime() : 0;
+      const dateB = b.date ? new Date(b.date as string).getTime() : 0;
+      return (isNaN(dateB) ? 0 : dateB) - (isNaN(dateA) ? 0 : dateA);
     });
 
   return (
