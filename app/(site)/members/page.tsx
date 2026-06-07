@@ -6,18 +6,18 @@
  *
  * Grupos exibidos em ordem:
  *   1. Coordenador        — bloco especial com bio expandida e links
- *   2. Pesquisadores      — Pesquisador Sênior e Pós-Doutorando
- *   3. Pós-graduação      — Doutorando e Mestrando
- *   4. Iniciação Científica
- *   5. Egressos           — lista com ano e instituição atual
- *   6. Colaboradores      — Colaborador Externo
+ *   2. Equipe ativa       — Pesquisador Sênior, Pós-Doutorando, Doutorando,
+ *                           Mestrando, Iniciação Científica
+ *   3. Egressos           — lista com ano e instituição atual
+ *   4. Colaboradores      — Colaborador Externo
  *
  * Fase 4: os cards receberão Morphing Dialog (Motion Primitives)
  * com bio completa e links acadêmicos ao clicar.
  */
 
-import { getCollection, formatDate } from "@/lib/mdx";
+import { getCollection } from "@/lib/mdx";
 import { siteConfig } from "@/lib/config";
+import PageHeader from "@/components/ui/PageHeader";
 
 // Ordem de exibição dos grupos na página
 const GROUP_ORDER = [
@@ -28,7 +28,6 @@ const GROUP_ORDER = [
   "Iniciação Científica",
 ];
 
-// Metadados da página — aparecem na aba do navegador
 export const metadata = {
   title: "Membros",
 };
@@ -48,13 +47,7 @@ export default async function MembersPage() {
   return (
     <div>
 
-      {/* ── Page Header ───────────────────────────────────────────────────── */}
-      <div className="page-header">
-        <p className="page-header-eyebrow">
-          {siteConfig.acronym} · {siteConfig.university}
-        </p>
-        <h1 className="section-title">Membros do laboratório</h1>
-      </div>
+      <PageHeader title="Membros do laboratório" />
 
       <main>
         <div className="container-site">
@@ -81,12 +74,12 @@ export default async function MembersPage() {
                   alignItems: "start",
                 }}
               >
-                {/* Foto */}
+                {/* Foto ou placeholder com inicial */}
                 <figure style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  {coordinator.photo ? (
+                  {(coordinator.photo as string | undefined) ? (
                     <img
                       src={coordinator.photo as string}
-                      alt={`Foto de ${coordinator.title}`}
+                      alt={`Foto de ${coordinator.title as string}`}
                       style={{
                         width: "160px",
                         aspectRatio: "0.85",
@@ -116,7 +109,7 @@ export default async function MembersPage() {
                   </figcaption>
                 </figure>
 
-                {/* Info */}
+                {/* Informações do coordenador */}
                 <div>
                   <p style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", fontWeight: 500, color: "var(--color-text)", marginBottom: "0.2rem" }}>
                     {coordinator.title as string}
@@ -125,7 +118,7 @@ export default async function MembersPage() {
                     Coordenador · {siteConfig.acronym}
                   </p>
 
-                  {/* Bio — parágrafos separados por linha em branco */}
+                  {/* Bio — parágrafos separados por linha em branco no frontmatter */}
                   <div style={{ marginBottom: "1.25rem" }}>
                     {(coordinator.bio as string).split("\n\n").map((p, i) => (
                       <p key={i} style={{ fontSize: "0.92rem", lineHeight: 1.8, color: "var(--color-text-muted)", fontWeight: 300, marginBottom: "0.85rem" }}>
@@ -134,24 +127,24 @@ export default async function MembersPage() {
                     ))}
                   </div>
 
-                  {/* Links acadêmicos em pílulas */}
+                  {/* Links acadêmicos em pílulas — só renderiza se o campo existir */}
                   <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
-                    {coordinator.lattes && (
+                    {(coordinator.lattes as string | undefined) && (
                       <a href={coordinator.lattes as string} target="_blank" rel="noopener noreferrer" className="pill-link">
                         Currículo Lattes
                       </a>
                     )}
-                    {coordinator.orcid && (
+                    {(coordinator.orcid as string | undefined) && (
                       <a href={coordinator.orcid as string} target="_blank" rel="noopener noreferrer" className="pill-link">
                         ORCID
                       </a>
                     )}
-                    {coordinator.scholar && (
+                    {(coordinator.scholar as string | undefined) && (
                       <a href={coordinator.scholar as string} target="_blank" rel="noopener noreferrer" className="pill-link">
                         Google Scholar
                       </a>
                     )}
-                    {coordinator.arxiv && (
+                    {(coordinator.arxiv as string | undefined) && (
                       <a href={coordinator.arxiv as string} target="_blank" rel="noopener noreferrer" className="pill-link">
                         arXiv
                       </a>
@@ -163,7 +156,7 @@ export default async function MembersPage() {
           )}
 
           {/* ── Membros ativos agrupados por role ───────────────────────────
-              Renderiza um grupo por vez seguindo GROUP_ORDER             */}
+              Renderiza um grupo por vez seguindo GROUP_ORDER              */}
           {GROUP_ORDER.some((role) => activeMembers.some((m) => m.role === role)) && (
             <section style={{ padding: "4rem 0", borderBottom: "1px solid var(--color-border)" }}>
               <h2 className="section-title" style={{ fontSize: "1.5rem" }}>
@@ -177,9 +170,10 @@ export default async function MembersPage() {
 
                 return (
                   <div key={role} style={{ marginBottom: "2.5rem" }}>
+                    {/* Label do grupo — ex: "Doutorandos" */}
                     <p className="group-label">{role}s</p>
 
-                    {/* Grid de cards — mínimo 240px por card */}
+                    {/* Grid de cards */}
                     <div
                       style={{
                         display: "grid",
@@ -207,25 +201,25 @@ export default async function MembersPage() {
                           {/* Área de pesquisa e bolsa */}
                           <p style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", fontWeight: 300, lineHeight: 1.5, marginBottom: "1rem" }}>
                             {member.research_area as string}
-                            {member.scholarship && (
+                            {(member.scholarship as string | undefined) && (
                               <>
                                 <br />
                                 <em style={{ fontSize: "0.75rem", color: "var(--color-text-subtle)" }}>
                                   Bolsa {member.scholarship as string}
-                                  {member.year_start && ` · desde ${member.year_start}`}
+                                  {(member.year_start as string | undefined) && ` · desde ${member.year_start as string}`}
                                 </em>
                               </>
                             )}
                           </p>
 
-                          {/* Links */}
+                          {/* Links acadêmicos */}
                           <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                            {member.lattes && (
+                            {(member.lattes as string | undefined) && (
                               <a href={member.lattes as string} target="_blank" rel="noopener noreferrer" className="pill-link">
                                 Lattes
                               </a>
                             )}
-                            {member.orcid && (
+                            {(member.orcid as string | undefined) && (
                               <a href={member.orcid as string} target="_blank" rel="noopener noreferrer" className="pill-link">
                                 ORCID
                               </a>
@@ -267,8 +261,8 @@ export default async function MembersPage() {
                       </p>
                       <p style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", fontWeight: 300 }}>
                         {member.role as string}
-                        {member.research_area && ` · ${member.research_area}`}
-                        {member.current_institution && (
+                        {(member.research_area as string | undefined) && ` · ${member.research_area as string}`}
+                        {(member.current_institution as string | undefined) && (
                           <em> · {member.current_institution as string}</em>
                         )}
                       </p>

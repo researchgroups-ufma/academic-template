@@ -124,7 +124,7 @@ export default async function PublicationsPage() {
                       </p>
                     </div>
                     {/* Link para PDF ou DOI se disponível */}
-                    {thesis.doi && (
+                    {(thesis.doi as string | undefined) && (
                       <div style={{ flexShrink: 0 }}>
                         <a
                           href={`https://doi.org/${thesis.doi as string}`}
