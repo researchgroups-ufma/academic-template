@@ -1,24 +1,326 @@
 ﻿/**
  * page.tsx — Página Membros
  *
- * Lista todos os membros do laboratório agrupados por função.
- * Os dados vêm dos arquivos em content/members/ via getCollection().
+ * Server Component — lê todos os membros de content/members/ via getCollection()
+ * e os distribui por grupo (role) para os componentes de exibição.
+ *
+ * Grupos exibidos em ordem:
+ *   1. Coordenador        — bloco especial com bio expandida e links
+ *   2. Pesquisadores      — Pesquisador Sênior e Pós-Doutorando
+ *   3. Pós-graduação      — Doutorando e Mestrando
+ *   4. Iniciação Científica
+ *   5. Egressos           — lista com ano e instituição atual
+ *   6. Colaboradores      — Colaborador Externo
  *
  * Fase 4: os cards receberão Morphing Dialog (Motion Primitives)
- * com bio completa, links acadêmicos e publicações ao clicar.
- *
- * TODO (Fase 2): implementar grid de MemberCard com dados reais.
+ * com bio completa e links acadêmicos ao clicar.
  */
 
-export default function MembersPage() {
+import { getCollection, formatDate } from "@/lib/mdx";
+import { siteConfig } from "@/lib/config";
+
+// Ordem de exibição dos grupos na página
+const GROUP_ORDER = [
+  "Pesquisador Sênior",
+  "Pós-Doutorando",
+  "Doutorando",
+  "Mestrando",
+  "Iniciação Científica",
+];
+
+// Metadados da página — aparecem na aba do navegador
+export const metadata = {
+  title: "Membros",
+};
+
+export default async function MembersPage() {
+  const allMembers = await getCollection("members");
+
+  // Remove o placeholder gerado pelo scaffolding
+  const members = allMembers.filter((m) => m.slug !== "placeholder");
+
+  // Separa os grupos
+  const coordinator = members.find((m) => m.role === "Coordenador");
+  const activeMembers = members.filter((m) => GROUP_ORDER.includes(m.role as string));
+  const alumni = members.filter((m) => m.role === "Egresso");
+  const collaborators = members.filter((m) => m.role === "Colaborador Externo");
+
   return (
-    <section className="section-padding">
-      <div className="container-site">
-        <h1 className="section-title">Membros</h1>
-        <span className="title-accent" />
-        {/* TODO (Fase 2): conectar com getCollection("members") */}
-        <p style={{ color: "var(--color-text-muted)" }}>Conteúdo em construção.</p>
+    <div>
+
+      {/* ── Page Header ───────────────────────────────────────────────────── */}
+      <div className="page-header">
+        <p className="page-header-eyebrow">
+          {siteConfig.acronym} · {siteConfig.university}
+        </p>
+        <h1 className="section-title">Membros do laboratório</h1>
       </div>
-    </section>
+
+      <main>
+        <div className="container-site">
+
+          {/* ── Coordenador ─────────────────────────────────────────────────
+              Bloco especial com foto, bio completa e links acadêmicos      */}
+          {coordinator && (
+            <section
+              style={{
+                padding: "4rem 0",
+                borderBottom: "1px solid var(--color-border)",
+              }}
+            >
+              <h2 className="section-title" style={{ fontSize: "1.5rem" }}>
+                Coordenador
+              </h2>
+              <span className="title-accent" />
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "160px 1fr",
+                  gap: "2.5rem",
+                  alignItems: "start",
+                }}
+              >
+                {/* Foto */}
+                <figure style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  {coordinator.photo ? (
+                    <img
+                      src={coordinator.photo as string}
+                      alt={`Foto de ${coordinator.title}`}
+                      style={{
+                        width: "160px",
+                        aspectRatio: "0.85",
+                        objectFit: "cover",
+                        border: "1px solid var(--color-border-strong)",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "160px",
+                        aspectRatio: "0.85",
+                        backgroundColor: "var(--color-bg-elevated)",
+                        border: "1px solid var(--color-border-strong)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <span style={{ color: "var(--color-primary)", fontFamily: "var(--font-display)", fontSize: "2rem", fontWeight: 600 }}>
+                        {(coordinator.title as string).charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                  <figcaption style={{ fontSize: "0.72rem", color: "var(--color-text-subtle)", textAlign: "center", marginTop: "0.5rem", fontStyle: "italic" }}>
+                    {coordinator.title as string}
+                  </figcaption>
+                </figure>
+
+                {/* Info */}
+                <div>
+                  <p style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", fontWeight: 500, color: "var(--color-text)", marginBottom: "0.2rem" }}>
+                    {coordinator.title as string}
+                  </p>
+                  <p style={{ fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--color-primary)", marginBottom: "1.25rem" }}>
+                    Coordenador · {siteConfig.acronym}
+                  </p>
+
+                  {/* Bio — parágrafos separados por linha em branco */}
+                  <div style={{ marginBottom: "1.25rem" }}>
+                    {(coordinator.bio as string).split("\n\n").map((p, i) => (
+                      <p key={i} style={{ fontSize: "0.92rem", lineHeight: 1.8, color: "var(--color-text-muted)", fontWeight: 300, marginBottom: "0.85rem" }}>
+                        {p}
+                      </p>
+                    ))}
+                  </div>
+
+                  {/* Links acadêmicos em pílulas */}
+                  <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
+                    {coordinator.lattes && (
+                      <a href={coordinator.lattes as string} target="_blank" rel="noopener noreferrer" className="pill-link">
+                        Currículo Lattes
+                      </a>
+                    )}
+                    {coordinator.orcid && (
+                      <a href={coordinator.orcid as string} target="_blank" rel="noopener noreferrer" className="pill-link">
+                        ORCID
+                      </a>
+                    )}
+                    {coordinator.scholar && (
+                      <a href={coordinator.scholar as string} target="_blank" rel="noopener noreferrer" className="pill-link">
+                        Google Scholar
+                      </a>
+                    )}
+                    {coordinator.arxiv && (
+                      <a href={coordinator.arxiv as string} target="_blank" rel="noopener noreferrer" className="pill-link">
+                        arXiv
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ── Membros ativos agrupados por role ───────────────────────────
+              Renderiza um grupo por vez seguindo GROUP_ORDER             */}
+          {GROUP_ORDER.some((role) => activeMembers.some((m) => m.role === role)) && (
+            <section style={{ padding: "4rem 0", borderBottom: "1px solid var(--color-border)" }}>
+              <h2 className="section-title" style={{ fontSize: "1.5rem" }}>
+                Equipe
+              </h2>
+              <span className="title-accent" />
+
+              {GROUP_ORDER.map((role) => {
+                const group = activeMembers.filter((m) => m.role === role);
+                if (group.length === 0) return null;
+
+                return (
+                  <div key={role} style={{ marginBottom: "2.5rem" }}>
+                    <p className="group-label">{role}s</p>
+
+                    {/* Grid de cards — mínimo 240px por card */}
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+                        gap: "1px",
+                        backgroundColor: "var(--color-border)",
+                        border: "1px solid var(--color-border)",
+                      }}
+                    >
+                      {group.map((member) => (
+                        <div
+                          key={member.slug}
+                          style={{
+                            backgroundColor: "var(--color-bg-elevated)",
+                            padding: "1.5rem",
+                            transition: "background-color 0.15s ease",
+                          }}
+                          className="member-card-hover"
+                        >
+                          {/* Nome */}
+                          <p style={{ fontFamily: "var(--font-display)", fontSize: "1.05rem", fontWeight: 500, color: "var(--color-text)", marginBottom: "0.15rem" }}>
+                            {member.title as string}
+                          </p>
+
+                          {/* Área de pesquisa e bolsa */}
+                          <p style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", fontWeight: 300, lineHeight: 1.5, marginBottom: "1rem" }}>
+                            {member.research_area as string}
+                            {member.scholarship && (
+                              <>
+                                <br />
+                                <em style={{ fontSize: "0.75rem", color: "var(--color-text-subtle)" }}>
+                                  Bolsa {member.scholarship as string}
+                                  {member.year_start && ` · desde ${member.year_start}`}
+                                </em>
+                              </>
+                            )}
+                          </p>
+
+                          {/* Links */}
+                          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                            {member.lattes && (
+                              <a href={member.lattes as string} target="_blank" rel="noopener noreferrer" className="pill-link">
+                                Lattes
+                              </a>
+                            )}
+                            {member.orcid && (
+                              <a href={member.orcid as string} target="_blank" rel="noopener noreferrer" className="pill-link">
+                                ORCID
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </section>
+          )}
+
+          {/* ── Egressos ────────────────────────────────────────────────────
+              Lista com nome, nível, tema e ano de conclusão               */}
+          {alumni.length > 0 && (
+            <section style={{ padding: "4rem 0", borderBottom: "1px solid var(--color-border)" }}>
+              <h2 className="section-title" style={{ fontSize: "1.5rem" }}>Egressos</h2>
+              <span className="title-accent" />
+
+              <div>
+                {alumni.map((member, index) => (
+                  <div
+                    key={member.slug}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr auto",
+                      gap: "1rem",
+                      alignItems: "baseline",
+                      padding: "0.75rem 0",
+                      borderBottom: "1px solid var(--color-border)",
+                      borderTop: index === 0 ? "1px solid var(--color-border)" : "none",
+                    }}
+                  >
+                    <div>
+                      <p style={{ fontFamily: "var(--font-display)", fontSize: "1rem", color: "var(--color-text)" }}>
+                        {member.title as string}
+                      </p>
+                      <p style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", fontWeight: 300 }}>
+                        {member.role as string}
+                        {member.research_area && ` · ${member.research_area}`}
+                        {member.current_institution && (
+                          <em> · {member.current_institution as string}</em>
+                        )}
+                      </p>
+                    </div>
+                    <p style={{ fontSize: "0.75rem", color: "var(--color-text-subtle)", whiteSpace: "nowrap" }}>
+                      {member.year_end as string}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* ── Colaboradores externos ───────────────────────────────────────
+              Grid 2 colunas com nome e instituição                        */}
+          {collaborators.length > 0 && (
+            <section style={{ padding: "4rem 0" }}>
+              <h2 className="section-title" style={{ fontSize: "1.5rem" }}>
+                Colaboradores externos
+              </h2>
+              <span className="title-accent" />
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "1rem",
+                }}
+              >
+                {collaborators.map((member) => (
+                  <div
+                    key={member.slug}
+                    style={{
+                      padding: "1rem 1.25rem",
+                      border: "1px solid var(--color-border-strong)",
+                      backgroundColor: "var(--color-bg-elevated)",
+                    }}
+                  >
+                    <p style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: 500, color: "var(--color-text)", marginBottom: "0.15rem" }}>
+                      {member.title as string}
+                    </p>
+                    <p style={{ fontSize: "0.78rem", color: "var(--color-text-muted)", fontWeight: 300 }}>
+                      {member.affiliation as string}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+        </div>
+      </main>
+    </div>
   );
 }

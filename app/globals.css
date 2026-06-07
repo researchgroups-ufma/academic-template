@@ -173,3 +173,65 @@ img { max-width: 100%; display: block; }
   color: var(--color-text-muted);
   border: 1px solid var(--color-border);
 }
+
+/* ── Page card link — hover via CSS (inline style não suporta :hover) ─────── */
+.page-card-link:hover {
+  border-color: var(--color-primary) !important;
+  background-color: var(--color-bg-subtle) !important;
+}
+
+/* ── Pílula de link acadêmico (Lattes, ORCID, Scholar, arXiv) ───────────────
+   Usado nos cards de membros e na seção do coordenador                      */
+.pill-link {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--color-primary);
+  text-decoration: none;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--color-primary-muted);
+  background: transparent;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.pill-link:hover {
+  background: var(--color-primary);
+  color: #000;
+  border-color: var(--color-primary);
+}
+
+/* ── Page header — cabeçalho escuro de páginas internas ─────────────────────
+   Usado no topo das páginas Membros e Publicações                           */
+.page-header {
+  background: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border);
+  padding: 5rem 0 3rem;
+  text-align: center;
+}
+
+.page-header-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  margin-bottom: 0.75rem;
+}
+
+/* ── Group label — label de grupo dentro de seções ──────────────────────────
+   Ex: "Doutorandos", "Mestrandos", "Alunos de graduação"                   */
+.group-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ── Member card hover ───────────────────────────────────────────────────── */
+.member-card-hover:hover {
+  background-color: var(--color-bg-subtle) !important;
+}

@@ -1,79 +1,73 @@
 ﻿/**
- * page.tsx — Homepage do site LaFiM
+ * page.tsx — Homepage do site LaFiM (branch lafim-design)
  *
- * É a primeira página que o visitante vê ao acessar o site (rota "/").
+ * Server Component — lê os dados do servidor e passa como props
+ * para os componentes de cada seção.
  *
- * Estrutura atual (Fase 1 — esqueleto):
- *   - Seção Hero com nome do laboratório e descrição
- *
- * O que será adicionado na Fase 2:
- *   - Hero completo com imagem de fundo lida de content/about/index.md
- *   - Seção de Linhas de Pesquisa em destaque
- *   - Grid de Membros principais
- *   - Últimas Notícias
- *
- * Este é um Server Component — não tem "use client".
- * Pode ler arquivos do servidor diretamente via getCollection() e getSingleFile().
+ * Seções:
+ *   1. Hero         — fullscreen com carrossel de imagens e logo SVG
+ *   2. Pesquisa     — linhas de pesquisa + projetos em destaque
+ *   3. Page Cards   — atalhos para Membros e Publicações
+ *   4. Coordenador  — bio e foto do coordenador do laboratório
  */
 
-import { siteConfig } from "@/lib/config";
+import Hero from "@/components/layout/Hero";
+import ResearchSection from "@/components/sections/ResearchSection";
+import PageCards from "@/components/sections/PageCards";
+import CoordinatorSection from "@/components/sections/CoordinatorSection";
+import { getSingleFile, getCollection } from "@/lib/mdx";
 
-export default function HomePage() {
+export default async function HomePage() {
+
+  // ── Dados do Hero — lidos de content/about/index.md ──────────────────────
+  const about = await getSingleFile("about/index.md");
+
+  // Normaliza hero_images para array — suporta string única ou array
+  const heroImages: string[] = Array.isArray(about.hero_images)
+    ? (about.hero_images as string[])
+    : about.hero_images
+    ? [about.hero_images as string]
+    : ["/uploads/hero1.webp"];
+
+  // ── Linhas de pesquisa — lidas de content/research/ ──────────────────────
+  const allResearch = await getCollection("research");
+
+  // Remove o placeholder gerado pelo scaffolding (slug "placeholder")
+  const researchLines = allResearch.filter((r) => r.slug !== "placeholder") as {
+    slug: string;
+    title: string;
+    summary: string;
+  }[];
+
+  // ── Coordenador — primeiro membro com role "Coordenador" ─────────────────
+  const allMembers = await getCollection("members");
+  const coordinator = allMembers.find((m) => m.role === "Coordenador");
+
   return (
     <div>
 
-      {/* ── Hero ────────────────────────────────────────────────────────────
-          Ocupa a altura total da tela (100svh) e centraliza o conteúdo.
-          svh (small viewport height) funciona melhor que vh em mobile,
-          pois desconsidera a barra de endereço do navegador.
+      {/* ── 1. Hero ────────────────────────────────────────────────────────── */}
+      <Hero
+        images={heroImages}
+        subtitle={about.subtitle as string}
+      />
 
-          TODO (Fase 2): substituir pelo Hero completo com imagem,
-          animações Framer Motion e dados lidos do content/about/index.md  */}
-      <section
-        style={{
-          minHeight: "100svh",
-          display: "flex",
-          alignItems: "center",
-        }}
-        className="section-padding"
-      >
-        <div className="container-site">
+      {/* ── 2. Pesquisa ────────────────────────────────────────────────────── */}
+      <ResearchSection researchLines={researchLines} />
 
-          {/* Indicador institucional acima do título */}
-          <p
-            style={{
-              color: "var(--color-primary)",
-              fontSize: "0.85rem",
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              marginBottom: "1.25rem",
-            }}
-          >
-            {siteConfig.university}
-          </p>
+      {/* ── 3. Cards de navegação ──────────────────────────────────────────── */}
+      <PageCards />
 
-          {/* Título principal — nome completo do laboratório */}
-          <h1
-            className="section-title"
-            style={{
-              fontSize: "clamp(2.5rem, 7vw, 5rem)",
-              maxWidth: "18ch",
-              marginBottom: 0,
-            }}
-          >
-            {siteConfig.name}
-          </h1>
-
-          {/* Traço dourado de acento abaixo do título */}
-          <span className="title-accent" />
-
-          {/* Descrição curta do laboratório */}
-          <p className="section-subtitle" style={{ marginBottom: "2.5rem" }}>
-            {siteConfig.description}
-          </p>
-
-        </div>
-      </section>
+      {/* ── 4. Sobre o Coordenador — só renderiza se houver um coordenador ─── */}
+      {coordinator && (
+        <CoordinatorSection
+          name={coordinator.title as string}
+          bio={coordinator.bio as string}
+          photo={coordinator.photo as string | undefined}
+          lattes={coordinator.lattes as string | undefined}
+          email={coordinator.email as string | undefined}
+        />
+      )}
 
     </div>
   );
