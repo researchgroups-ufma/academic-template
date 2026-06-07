@@ -14,6 +14,7 @@
  */
 
 import { siteConfig } from "@/lib/config";
+import { TextEffect } from "@/components/motion-primitives/text-effect";
 
 type PageHeaderProps = {
   title: string;
@@ -26,7 +27,11 @@ export default function PageHeader({ title, eyebrow }: PageHeaderProps) {
       <p className="page-header-eyebrow">
         {eyebrow ?? `${siteConfig.acronym} · ${siteConfig.university}`}
       </p>
-      <h1 className="section-title">{title}</h1>
+      <h1 className="section-title">
+        <TextEffect per="char" preset="fade">
+         {title}
+        </TextEffect>
+      </h1>
     </div>
   );
 }
