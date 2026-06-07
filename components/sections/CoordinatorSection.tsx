@@ -1,4 +1,6 @@
-﻿/**
+﻿import { InView } from "@/components/motion-primitives/in-view";
+
+/**
  * CoordinatorSection — Seção "Sobre o Coordenador" da homepage
  *
  * Estrutura:
@@ -40,6 +42,14 @@ export default function CoordinatorSection({
         <span className="title-accent" />
 
         {/* Layout: texto à esquerda, foto à direita */}
+        <InView
+          variants={{
+            hidden: { opacity: 0, y: 32 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          viewOptions={{ margin: "0px 0px -80px 0px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
         <div
           style={{
             display: "grid",
@@ -150,6 +160,7 @@ export default function CoordinatorSection({
           </figure>
 
         </div>
+        </InView>
       </div>
     </section>
   );

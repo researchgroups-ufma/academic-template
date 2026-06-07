@@ -1,10 +1,14 @@
 ﻿/**
- * MemberCardModal — Card de membro com modal de detalhes ao clicar
+ * MemberCardModal — Card de membro com Morphing Dialog
+ *
+ * Usa o MorphingDialog do Motion Primitives para criar uma transição
+ * fluida entre o card fechado e o modal expandido.
  *
  * Estado fechado: nome, área de pesquisa, bolsa e ano de início.
- * Ao clicar: abre modal com foto, bio completa e links acadêmicos.
+ * Ao clicar: expande com animação morphing mostrando foto, bio
+ * completa e links acadêmicos.
  *
- * Fase 4: o modal será substituído pelo Morphing Dialog do Motion Primitives.
+ * Fase futura: ajustar variantes e transição conforme feedback visual.
  *
  * Props:
  *   name          — nome completo (obrigatório)
@@ -23,7 +27,16 @@
 
 "use client";
 
-import { useState } from "react";
+import {
+  MorphingDialog,
+  MorphingDialogTrigger,
+  MorphingDialogContent,
+  MorphingDialogTitle,
+  MorphingDialogSubtitle,
+  MorphingDialogClose,
+  MorphingDialogDescription,
+  MorphingDialogContainer,
+} from "@/components/motion-primitives/morphing-dialog";
 
 type MemberCardModalProps = {
   name: string;
@@ -44,40 +57,50 @@ export default function MemberCardModal({
   name, role, research_area, scholarship, year_start,
   bio, photo, email, lattes, orcid, scholar, arxiv,
 }: MemberCardModalProps) {
-  const [open, setOpen] = useState(false);
-
   return (
-    <>
-      {/* ── Card fechado ──────────────────────────────────────────────────── */}
-      <div
-        onClick={() => setOpen(true)}
-        className="member-card-hover"
+    <MorphingDialog
+      transition={{
+        type: "spring",
+        bounce: 0.05,
+        duration: 0.3,
+      }}
+    >
+
+      {/* ── Card fechado (trigger) ─────────────────────────────────────────── */}
+      <MorphingDialogTrigger
         style={{
           backgroundColor: "var(--color-bg-elevated)",
           padding: "1.5rem",
           transition: "background-color 0.15s ease",
+          width: "100%",
+          textAlign: "left",
           cursor: "pointer",
         }}
+        className="member-card-hover"
       >
         {/* Nome */}
-        <p style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "1.05rem",
-          fontWeight: 500,
-          color: "var(--color-text)",
-          marginBottom: "0.15rem",
-        }}>
+        <MorphingDialogTitle
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "1.05rem",
+            fontWeight: 500,
+            color: "var(--color-text)",
+            marginBottom: "0.15rem",
+          }}
+        >
           {name}
-        </p>
+        </MorphingDialogTitle>
 
         {/* Área de pesquisa e bolsa */}
-        <p style={{
-          fontSize: "0.8rem",
-          color: "var(--color-text-muted)",
-          fontWeight: 300,
-          lineHeight: 1.5,
-          marginBottom: "1rem",
-        }}>
+        <MorphingDialogSubtitle
+          style={{
+            fontSize: "0.8rem",
+            color: "var(--color-text-muted)",
+            fontWeight: 300,
+            lineHeight: 1.5,
+            marginBottom: "1rem",
+          }}
+        >
           {research_area}
           {scholarship && (
             <>
@@ -88,74 +111,41 @@ export default function MemberCardModal({
               </em>
             </>
           )}
-        </p>
+        </MorphingDialogSubtitle>
 
         {/* Indicador de que há mais informações */}
         <p style={{ fontSize: "0.7rem", color: "var(--color-text-subtle)" }}>
           Ver perfil →
         </p>
-      </div>
+      </MorphingDialogTrigger>
 
-      {/* ── Modal de detalhes ─────────────────────────────────────────────── */}
-      {open && (
-        <>
-          {/* Overlay — clique fora fecha */}
+      {/* ── Modal expandido ───────────────────────────────────────────────── */}
+      <MorphingDialogContainer>
+        <MorphingDialogContent
+          style={{
+            backgroundColor: "var(--color-bg-elevated)",
+            border: "1px solid var(--color-border-strong)",
+            borderRadius: "0.75rem",
+            width: "min(600px, 90vw)",
+            maxHeight: "85vh",
+            overflowY: "auto",
+            padding: "2rem",
+          }}
+        >
+
+          {/* Layout: foto + info lado a lado */}
           <div
-            onClick={() => setOpen(false)}
             style={{
-              position: "fixed",
-              inset: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.75)",
-              zIndex: 200,
-            }}
-          />
-
-          {/* Conteúdo do modal */}
-          <div
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: 201,
-              backgroundColor: "var(--color-bg-elevated)",
-              border: "1px solid var(--color-border-strong)",
-              borderRadius: "0.75rem",
-              width: "min(600px, 90vw)",
-              maxHeight: "85vh",
-              overflowY: "auto",
-              padding: "2rem",
-            }}
-          >
-            {/* Botão fechar */}
-            <button
-              onClick={() => setOpen(false)}
-              style={{
-                position: "absolute",
-                top: "1rem",
-                right: "1rem",
-                background: "none",
-                border: "none",
-                color: "var(--color-text-muted)",
-                fontSize: "1.25rem",
-                cursor: "pointer",
-                lineHeight: 1,
-              }}
-              aria-label="Fechar"
-            >
-              ✕
-            </button>
-
-            {/* Layout: foto + info */}
-            <div style={{
               display: "grid",
               gridTemplateColumns: "140px 1fr",
               gap: "1.5rem",
               alignItems: "start",
               marginBottom: "1.5rem",
-            }}>
-              {/* Foto ou placeholder */}
-              <div style={{
+            }}
+          >
+            {/* Foto ou placeholder com inicial */}
+            <div
+              style={{
                 width: "140px",
                 aspectRatio: "0.85",
                 backgroundColor: "var(--color-bg-subtle)",
@@ -165,90 +155,90 @@ export default function MemberCardModal({
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
-              }}>
-                {photo ? (
-                  <img
-                    src={photo}
-                    alt={`Foto de ${name}`}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  />
-                ) : (
-                  <span style={{
+              }}
+            >
+              {photo ? (
+                <img
+                  src={photo}
+                  alt={`Foto de ${name}`}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                <span
+                  style={{
                     fontFamily: "var(--font-display)",
                     fontSize: "3rem",
                     fontWeight: 600,
                     color: "var(--color-primary)",
-                  }}>
-                    {name.charAt(0)}
-                  </span>
-                )}
-              </div>
+                  }}
+                >
+                  {name.charAt(0)}
+                </span>
+              )}
+            </div>
 
-              {/* Nome, função e links */}
-              <div>
-                <p style={{
+            {/* Nome, função e links */}
+            <div>
+              <MorphingDialogTitle
+                style={{
                   fontFamily: "var(--font-display)",
                   fontSize: "1.3rem",
                   fontWeight: 500,
                   color: "var(--color-text)",
                   marginBottom: "0.2rem",
-                }}>
-                  {name}
-                </p>
-                <p style={{
-                  fontSize: "0.8rem",
-                  color: "var(--color-primary)",
-                  marginBottom: "0.2rem",
-                }}>
-                  {role}
-                </p>
-                {research_area && (
-                  <p style={{
+                }}
+              >
+                {name}
+              </MorphingDialogTitle>
+
+              <p style={{ fontSize: "0.8rem", color: "var(--color-primary)", marginBottom: "0.2rem" }}>
+                {role}
+              </p>
+
+              {research_area && (
+                <MorphingDialogSubtitle
+                  style={{
                     fontSize: "0.8rem",
                     color: "var(--color-text-subtle)",
                     marginBottom: "1rem",
-                  }}>
-                    {research_area}
-                  </p>
-                )}
+                  }}
+                >
+                  {research_area}
+                </MorphingDialogSubtitle>
+              )}
 
-                {/* Links acadêmicos */}
-                <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                  {email && (
-                    <a href={`mailto:${email}`} className="pill-link">
-                      Email
-                    </a>
-                  )}
-                  {lattes && (
-                    <a href={lattes} target="_blank" rel="noopener noreferrer" className="pill-link">
-                      Lattes
-                    </a>
-                  )}
-                  {orcid && (
-                    <a href={orcid} target="_blank" rel="noopener noreferrer" className="pill-link">
-                      ORCID
-                    </a>
-                  )}
-                  {scholar && (
-                    <a href={scholar} target="_blank" rel="noopener noreferrer" className="pill-link">
-                      Scholar
-                    </a>
-                  )}
-                  {arxiv && (
-                    <a href={arxiv} target="_blank" rel="noopener noreferrer" className="pill-link">
-                      arXiv
-                    </a>
-                  )}
-                </div>
+              {/* Links acadêmicos */}
+              <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                {email && (
+                  <a href={`mailto:${email}`} className="pill-link">Email</a>
+                )}
+                {lattes && (
+                  <a href={lattes} target="_blank" rel="noopener noreferrer" className="pill-link">Lattes</a>
+                )}
+                {orcid && (
+                  <a href={orcid} target="_blank" rel="noopener noreferrer" className="pill-link">ORCID</a>
+                )}
+                {scholar && (
+                  <a href={scholar} target="_blank" rel="noopener noreferrer" className="pill-link">Scholar</a>
+                )}
+                {arxiv && (
+                  <a href={arxiv} target="_blank" rel="noopener noreferrer" className="pill-link">arXiv</a>
+                )}
               </div>
             </div>
+          </div>
 
-            {/* Bio completa */}
-            {bio && (
-              <div style={{
-                borderTop: "1px solid var(--color-border)",
-                paddingTop: "1.5rem",
-              }}>
+          {/* Bio completa */}
+          {bio && (
+            <MorphingDialogDescription
+              disableLayoutAnimation
+              variants={{
+                initial: { opacity: 0, y: 20 },
+                animate: { opacity: 1, y: 0 },
+                exit:    { opacity: 0, y: 20 },
+              }}
+            >
+              <div style={{ borderTop: "1px solid var(--color-border)", paddingTop: "1.5rem" }}>
                 {bio.split("\n\n").map((paragraph, index) => (
                   <p
                     key={index}
@@ -264,10 +254,15 @@ export default function MemberCardModal({
                   </p>
                 ))}
               </div>
-            )}
-          </div>
-        </>
-      )}
-    </>
+            </MorphingDialogDescription>
+          )}
+
+          {/* Botão fechar */}
+          <MorphingDialogClose className="text-zinc-400" />
+
+        </MorphingDialogContent>
+      </MorphingDialogContainer>
+
+    </MorphingDialog>
   );
 }

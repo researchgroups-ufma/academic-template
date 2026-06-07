@@ -9,7 +9,10 @@
  * Usado em: app/(site)/page.tsx (homepage)
  */
 
+"use client";
 import Link from "next/link";
+import { InView } from "@/components/motion-primitives/in-view";
+import { motion } from "framer-motion";
 
 export default function PageCards() {
   // Dados dos cards — para adicionar mais cards, adicione um objeto neste array
@@ -40,6 +43,14 @@ export default function PageCards() {
       <div className="container-site">
 
         {/* Grid de dois cards lado a lado */}
+        <InView
+          variants={{
+            hidden: { opacity: 0, y: 24 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          viewOptions={{ margin: "0px 0px -60px 0px" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
         <div
           style={{
             display: "grid",
@@ -48,8 +59,12 @@ export default function PageCards() {
           }}
         >
           {cards.map((card) => (
-            <Link
+            <motion.div
               key={card.href}
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+            <Link
               href={card.href}
               style={{
                 display: "block",
@@ -114,8 +129,10 @@ export default function PageCards() {
                 {card.cta}
               </p>
             </Link>
+            </motion.div>
           ))}
         </div>
+        </InView>
 
       </div>
     </section>

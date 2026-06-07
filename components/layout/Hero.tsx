@@ -23,6 +23,8 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { TextEffect } from "@/components/motion-primitives/text-effect";
+import { motion } from "framer-motion";
 
 type HeroProps = {
   images: string[];
@@ -123,15 +125,18 @@ export default function Hero({ images, subtitle }: HeroProps) {
       >
 
         {/* Logo SVG do LaFiM */}
-        <img
-          src="/logo/lafim_branco.svg"
-          alt="LaFiM — Laboratório de Física dos Materiais"
-          style={{
+         <motion.img
+           src="/logo/lafim_branco.svg"
+           alt="LaFiM — Laboratório de Física dos Materiais"
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.8, ease: "easeOut" }}
+           style={{
             height: "auto",
-            width: "min(1800px, 180vw)", /* responsivo — não ultrapassa 55% da tela */
+            width: "min(1400px, 110vw)",
             marginBottom: "1.5rem",
-          }}
-        />
+           }}
+           />
 
         {/* Linha horizontal separadora — estilo Unearthly Materials */}
         <div
@@ -145,17 +150,21 @@ export default function Hero({ images, subtitle }: HeroProps) {
 
         {/* Subtítulo abaixo da linha */}
         {subtitle && (
-          <p
-            style={{
+           <TextEffect
+              per="char"
+              preset="fade"
+              style={{
               color: "var(--color-text-muted)",
               fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)",
               fontWeight: 300,
               letterSpacing: "0.02em",
               maxWidth: "480px",
+              display: "block",
             }}
           >
             {subtitle}
-          </p>
+           </TextEffect>
+      
         )}
 
         {/* Indicadores do carrossel — só aparecem com 2+ imagens */}

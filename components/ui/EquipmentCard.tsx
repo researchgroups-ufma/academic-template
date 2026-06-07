@@ -1,11 +1,12 @@
 ﻿/**
- * EquipmentCard — Card de equipamento do laboratório
+ * EquipmentCard — Card de equipamento com Morphing Dialog
+ *
+ * Usa o MorphingDialog do Motion Primitives para criar uma transição
+ * fluida entre o card fechado e o modal expandido.
  *
  * Estado fechado: foto, nome e descrição breve.
- * Ao clicar: abre modal com foto maior, descrição completa,
- * fabricante e modelo.
- *
- * Fase 4: o modal será substituído pelo Morphing Dialog do Motion Primitives.
+ * Ao clicar: expande com animação morphing mostrando foto grande,
+ * descrição completa, fabricante e modelo.
  *
  * Props:
  *   title        — nome do equipamento (obrigatório)
@@ -18,7 +19,17 @@
 
 "use client";
 
-import { useState } from "react";
+import {
+  MorphingDialog,
+  MorphingDialogTrigger,
+  MorphingDialogContent,
+  MorphingDialogTitle,
+  MorphingDialogSubtitle,
+  MorphingDialogClose,
+  MorphingDialogDescription,
+  MorphingDialogContainer,
+  MorphingDialogImage,
+} from "@/components/motion-primitives/morphing-dialog";
 
 type EquipmentCardProps = {
   title: string;
@@ -30,24 +41,34 @@ type EquipmentCardProps = {
 };
 
 export default function EquipmentCard({
-  title, summary, description, photo, manufacturer, model,
+  title,
+  summary,
+  description,
+  photo,
+  manufacturer,
+  model,
 }: EquipmentCardProps) {
-  const [open, setOpen] = useState(false);
-
   return (
-    <>
-      {/* ── Card fechado ──────────────────────────────────────────────────── */}
-      <div
-        onClick={() => setOpen(true)}
-        className="structure-card"
+    <MorphingDialog
+      transition={{
+        type: "spring",
+        bounce: 0.05,
+        duration: 0.3,
+      }}
+    >
+      {/* ── Card fechado (trigger) ─────────────────────────────────────────── */}
+      <MorphingDialogTrigger
         style={{
-          cursor: "pointer",
           backgroundColor: "var(--color-bg-elevated)",
           border: "1px solid var(--color-border-strong)",
           borderRadius: "0.5rem",
           overflow: "hidden",
+          width: "100%",
+          textAlign: "left",
+          cursor: "pointer",
           transition: "border-color 0.2s ease",
         }}
+        className="structure-card"
       >
         {/* Foto ou placeholder */}
         <div
@@ -62,13 +83,12 @@ export default function EquipmentCard({
           }}
         >
           {photo ? (
-            <img
+            <MorphingDialogImage
               src={photo}
               alt={title}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           ) : (
-            /* Placeholder com ícone de equipamento quando não há foto */
             <div
               style={{
                 display: "flex",
@@ -87,7 +107,7 @@ export default function EquipmentCard({
 
         {/* Informações do card */}
         <div style={{ padding: "1.25rem" }}>
-          <p
+          <MorphingDialogTitle
             style={{
               fontFamily: "var(--font-display)",
               fontSize: "1rem",
@@ -97,8 +117,9 @@ export default function EquipmentCard({
             }}
           >
             {title}
-          </p>
-          <p
+          </MorphingDialogTitle>
+
+          <MorphingDialogSubtitle
             style={{
               fontSize: "0.82rem",
               color: "var(--color-text-muted)",
@@ -108,91 +129,52 @@ export default function EquipmentCard({
             }}
           >
             {summary}
-          </p>
-          {/* Fabricante e modelo se disponíveis */}
+          </MorphingDialogSubtitle>
+
+          {/* Fabricante e modelo */}
           {(manufacturer || model) && (
             <p style={{ fontSize: "0.72rem", color: "var(--color-text-subtle)" }}>
               {[manufacturer, model].filter(Boolean).join(" · ")}
             </p>
           )}
+
           <p style={{ fontSize: "0.7rem", color: "var(--color-text-subtle)", marginTop: "0.75rem" }}>
             Ver detalhes →
           </p>
         </div>
-      </div>
+      </MorphingDialogTrigger>
 
-      {/* ── Modal de detalhes ─────────────────────────────────────────────── */}
-      {open && (
-        <>
-          {/* Overlay — clique fora fecha o modal */}
-          <div
-            onClick={() => setOpen(false)}
-            style={{
-              position: "fixed",
-              inset: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.75)",
-              zIndex: 200,
-            }}
-          />
+      {/* ── Modal expandido ───────────────────────────────────────────────── */}
+      <MorphingDialogContainer>
+        <MorphingDialogContent
+          style={{
+            backgroundColor: "var(--color-bg-elevated)",
+            border: "1px solid var(--color-border-strong)",
+            borderRadius: "0.75rem",
+            width: "min(640px, 90vw)",
+            maxHeight: "85vh",
+            overflowY: "auto",
+          }}
+        >
+          {/* Foto grande */}
+          {photo && (
+            <MorphingDialogImage
+              src={photo}
+              alt={title}
+              style={{
+                width: "100%",
+                aspectRatio: "16 / 9",
+                objectFit: "cover",
+                borderRadius: "0.75rem 0.75rem 0 0",
+              }}
+            />
+          )}
 
           {/* Conteúdo do modal */}
-          <div
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: 201,
-              backgroundColor: "var(--color-bg-elevated)",
-              border: "1px solid var(--color-border-strong)",
-              borderRadius: "0.75rem",
-              width: "min(640px, 90vw)",
-              maxHeight: "85vh",
-              overflowY: "auto",
-              padding: "2rem",
-            }}
-          >
-            {/* Botão fechar */}
-            <button
-              onClick={() => setOpen(false)}
-              style={{
-                position: "absolute",
-                top: "1rem",
-                right: "1rem",
-                background: "none",
-                border: "none",
-                color: "var(--color-text-muted)",
-                fontSize: "1.25rem",
-                cursor: "pointer",
-                lineHeight: 1,
-              }}
-              aria-label="Fechar"
-            >
-              ✕
-            </button>
+          <div style={{ padding: "1.75rem" }}>
 
-            {/* Foto grande */}
-            {photo && (
-              <div
-                style={{
-                  width: "100%",
-                  aspectRatio: "16 / 9",
-                  overflow: "hidden",
-                  borderRadius: "0.375rem",
-                  marginBottom: "1.5rem",
-                  backgroundColor: "var(--color-bg-subtle)",
-                }}
-              >
-                <img
-                  src={photo}
-                  alt={title}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              </div>
-            )}
-
-            {/* Nome */}
-            <p
+            {/* Título */}
+            <MorphingDialogTitle
               style={{
                 fontFamily: "var(--font-display)",
                 fontSize: "1.4rem",
@@ -202,19 +184,19 @@ export default function EquipmentCard({
               }}
             >
               {title}
-            </p>
+            </MorphingDialogTitle>
 
             {/* Fabricante e modelo */}
             {(manufacturer || model) && (
-              <p
+              <MorphingDialogSubtitle
                 style={{
-                  fontSize: "0.82rem",
+                  fontSize: "0.85rem",
                   color: "var(--color-primary)",
                   marginBottom: "1.25rem",
                 }}
               >
                 {[manufacturer, model].filter(Boolean).join(" · ")}
-              </p>
+              </MorphingDialogSubtitle>
             )}
 
             {/* Linha divisória */}
@@ -228,29 +210,43 @@ export default function EquipmentCard({
             />
 
             {/* Descrição completa */}
-            {description ? (
-              description.split("\n\n").map((paragraph, index) => (
-                <p
-                  key={index}
-                  style={{
-                    fontSize: "0.9rem",
-                    lineHeight: 1.8,
-                    color: "var(--color-text-muted)",
-                    fontWeight: 300,
-                    marginBottom: "0.85rem",
-                  }}
-                >
-                  {paragraph}
+            <MorphingDialogDescription
+              disableLayoutAnimation
+              variants={{
+                initial: { opacity: 0, y: 20 },
+                animate: { opacity: 1, y: 0 },
+                exit:    { opacity: 0, y: 20 },
+              }}
+            >
+              {description ? (
+                description.split("\n\n").map((paragraph, index) => (
+                  <p
+                    key={index}
+                    style={{
+                      fontSize: "0.9rem",
+                      lineHeight: 1.8,
+                      color: "var(--color-text-muted)",
+                      fontWeight: 300,
+                      marginBottom: "0.85rem",
+                    }}
+                  >
+                    {paragraph}
+                  </p>
+                ))
+              ) : (
+                <p style={{ fontSize: "0.9rem", color: "var(--color-text-subtle)" }}>
+                  {summary}
                 </p>
-              ))
-            ) : (
-              <p style={{ fontSize: "0.9rem", color: "var(--color-text-subtle)" }}>
-                {summary}
-              </p>
-            )}
+              )}
+            </MorphingDialogDescription>
           </div>
-        </>
-      )}
-    </>
+
+          {/* Botão fechar */}
+          <MorphingDialogClose
+            className="text-zinc-400"
+          />
+        </MorphingDialogContent>
+      </MorphingDialogContainer>
+    </MorphingDialog>
   );
 }

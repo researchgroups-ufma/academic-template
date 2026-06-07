@@ -1,4 +1,6 @@
-﻿/**
+﻿import { InView } from "@/components/motion-primitives/in-view";
+
+/**
  * ResearchSection — Seção de Pesquisa da homepage
  *
  * Estrutura:
@@ -65,9 +67,17 @@ export default function ResearchSection({ researchLines }: ResearchSectionProps)
               marginBottom: "4rem",
             }}
           >
-            {researchLines.map((line) => (
-              <div
+            {researchLines.map((line, index) => (
+              <InView
                 key={line.slug}
+                variants={{
+                  hidden: { opacity: 0, y: 24, filter: "blur(4px)" },
+                  visible: { opacity: 1, y: 0, filter: "blur(0px)" },
+                }}
+                viewOptions={{ margin: "0px 0px -60px 0px" }}
+                transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
+              >
+              <div
                 style={{
                   borderLeft: "3px solid var(--color-primary)", /* traço âmbar lateral */
                   padding: "1rem 1.25rem",
@@ -96,6 +106,7 @@ export default function ResearchSection({ researchLines }: ResearchSectionProps)
                   {line.summary}
                 </p>
               </div>
+              </InView>
             ))}
           </div>
         )}
