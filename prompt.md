@@ -1,197 +1,38 @@
-# Tarefa: Adicionar animações InView em três componentes
+# Tarefa: Corrigir animação da logo no Hero na primeira carga
 
-## Contexto
-Projeto Next.js 15 + Tailwind CSS v4 + Framer Motion + Motion Primitives.
-O componente `InView` está em `components/motion-primitives/in-view.tsx`.
-O `motion` vem de `framer-motion`.
+## Problema
+No arquivo `components/layout/Hero.tsx`, na primeira visita ao site a logo SVG aparece sem animação porque o Framer Motion ainda não hidratou o componente. Nas visitas seguintes funciona corretamente pois o JavaScript já está em cache.
 
-## REGRAS IMPORTANTES
-- Faça APENAS as modificações descritas abaixo
-- NÃO altere nenhuma outra parte dos arquivos
-- NÃO mude estilos, lógica ou estrutura existente
-- Adicione apenas os imports necessários e envolva os elementos indicados
+## Correção
 
----
+### 1. Verificar imports
+Certifique-se que `useState` e `useEffect` estão no import do React no topo do arquivo. Se não estiverem, adicione-os.
 
-## Modificação 1 — `components/sections/ResearchSection.tsx`
+### 2. Adicionar hook useMounted
+Logo após as declarações de estado existentes (após `const [opacity, setOpacity]`), adicione:
 
-### Adicionar imports no topo do arquivo (após os imports existentes):
 ```tsx
-import { InView } from "@/components/motion-primitives/in-view";
+const [mounted, setMounted] = useState(false);
+
+useEffect(() => {
+  setMounted(true);
+}, []);
 ```
 
-### Localizar este trecho exato:
+### 3. Atualizar o motion.img da logo
+Localize o `motion.img` da logo SVG que tem este atributo:
+
 ```tsx
-{researchLines.map((line) => (
-  <div
-    key={line.slug}
-    style={{
-      borderLeft: "3px solid var(--color-primary)",
+initial={{ opacity: 0, y: 20 }}
 ```
 
-### Substituir por:
+Substitua por:
+
 ```tsx
-{researchLines.map((line, index) => (
-  <InView
-    key={line.slug}
-    variants={{
-      hidden: { opacity: 0, y: 24, filter: "blur(4px)" },
-      visible: { opacity: 1, y: 0, filter: "blur(0px)" },
-    }}
-    viewOptions={{ margin: "0px 0px -60px 0px" }}
-    transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
-  >
-    <div
-      style={{
-        borderLeft: "3px solid var(--color-primary)",
+initial={mounted ? { opacity: 0, y: 20 } : false}
 ```
 
-### Localizar o fechamento do map (o `</div>` que fecha o card e o `)}`):
-```tsx
-          </div>
-        ))}
-```
-
-### Substituir por:
-```tsx
-          </div>
-        </InView>
-      ))}
-```
-
----
-
-## Modificação 2 — `components/sections/PageCards.tsx`
-
-### Adicionar imports no topo do arquivo (após os imports existentes):
-```tsx
-import { InView } from "@/components/motion-primitives/in-view";
-import { motion } from "framer-motion";
-```
-
-### Localizar este trecho exato:
-```tsx
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "1.5rem",
-          }}
-        >
-          {cards.map((card) => (
-            <Link
-```
-
-### Substituir por:
-```tsx
-        <InView
-          variants={{
-            hidden: { opacity: 0, y: 24 },
-            visible: { opacity: 1, y: 0 },
-          }}
-          viewOptions={{ margin: "0px 0px -60px 0px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "1.5rem",
-          }}
-        >
-          {cards.map((card) => (
-            <motion.div
-              key={card.href}
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-            <Link
-```
-
-### Localizar o fechamento do map e do grid:
-```tsx
-          ))}
-        </div>
-```
-
-### Substituir por:
-```tsx
-            </motion.div>
-          ))}
-        </div>
-        </InView>
-```
-
-### Remover o `key={card.href}` do Link (pois agora está no motion.div):
-Localizar:
-```tsx
-              key={card.href}
-              href={card.href}
-```
-Substituir por:
-```tsx
-              href={card.href}
-```
-
----
-
-## Modificação 3 — `components/sections/CoordinatorSection.tsx`
-
-### Adicionar imports no topo do arquivo (após os imports existentes):
-```tsx
-import { InView } from "@/components/motion-primitives/in-view";
-```
-
-### Localizar este trecho exato:
-```tsx
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 200px",
-            gap: "3rem",
-            alignItems: "start",
-          }}
-        >
-```
-
-### Substituir por:
-```tsx
-        <InView
-          variants={{
-            hidden: { opacity: 0, y: 32 },
-            visible: { opacity: 1, y: 0 },
-          }}
-          viewOptions={{ margin: "0px 0px -80px 0px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 200px",
-            gap: "3rem",
-            alignItems: "start",
-          }}
-        >
-```
-
-### Localizar o fechamento do div do grid (antes do fechamento da section):
-```tsx
-        </div>
-      </section>
-```
-
-### Substituir por:
-```tsx
-        </div>
-        </InView>
-      </section>
-```
-
----
-
-## Verificação final
-Após as modificações, execute:
-```
-npm run build
-```
-O build deve passar sem erros de tipo. Warnings de `<img>` podem ser ignorados.
+## Regras
+- Não altere mais nada no arquivo
+- Não mude estilos, lógica do carrossel ou qualquer outro comportamento
+- Após a modificação, rode `npm run build` e confirme que passa sem erros

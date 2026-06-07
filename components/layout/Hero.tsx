@@ -38,6 +38,13 @@ export default function Hero({ images, subtitle }: HeroProps) {
   // Controla a opacidade durante a transição de fade entre imagens
   const [opacity, setOpacity] = useState(1);
 
+  // Sinaliza que o componente hidratou — necessário para animação da logo na primeira carga
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Ativa o carrossel automático apenas se houver mais de uma imagem
   useEffect(() => {
     if (images.length <= 1) return; // sem carrossel para uma única imagem
@@ -128,7 +135,7 @@ export default function Hero({ images, subtitle }: HeroProps) {
          <motion.img
            src="/logo/lafim_branco.svg"
            alt="LaFiM — Laboratório de Física dos Materiais"
-           initial={{ opacity: 0, y: 20 }}
+           initial={mounted ? { opacity: 0, y: 20 } : false}
            animate={{ opacity: 1, y: 0 }}
            transition={{ duration: 0.8, ease: "easeOut" }}
            style={{
