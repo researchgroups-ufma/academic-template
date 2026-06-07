@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+﻿# LaFiM — Site Institucional
 
-## Getting Started
+Site institucional do **Laboratório de Física dos Materiais (LaFiM)** da UFMA.
 
-First, run the development server:
+## Stack
+
+| Camada      | Tecnologia                          |
+|-------------|-------------------------------------|
+| Framework   | Next.js 15 (App Router, TypeScript) |
+| Estilo      | Tailwind CSS v4                     |
+| CMS         | Decap CMS                           |
+| Hospedagem  | Cloudflare Pages                    |
+| Repositório | GitHub (researchgroups-ufma/lafim)  |
+
+## Desenvolvimento local
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+O site roda em `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Estrutura principal
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Pasta            | Descrição                                      |
+|------------------|------------------------------------------------|
+| `app/`           | Páginas do Next.js (App Router)                |
+| `components/`    | Componentes reutilizáveis                      |
+| `content/`       | Arquivos Markdown editados pelo CMS            |
+| `lib/`           | Utilitários: config.ts e mdx.ts                |
+| `public/admin/`  | Painel editorial Decap CMS                     |
 
-## Learn More
+## Para editar dados ou identidade visual do grupo
 
-To learn more about Next.js, take a look at the following resources:
+Edite `lib/config.ts` — é o único arquivo que precisa ser alterado
+para adaptar o template a um novo grupo de pesquisa.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Para editar o conteúdo (membros, publicações, notícias)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Acesse `/admin` no site em produção e autentique com sua conta GitHub.
 
-## Deploy on Vercel
+## Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Qualquer push na branch `main` dispara um rebuild automático no Cloudflare Pages.

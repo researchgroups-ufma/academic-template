@@ -1,0 +1,115 @@
+﻿# =============================================================================
+# config.yml — Configuração do Decap CMS
+#
+# Este arquivo define quais coleções e campos aparecem no painel /admin.
+# Para adicionar um novo campo a uma coleção, adicione uma entrada em fields.
+# Para criar uma nova coleção, copie o bloco de uma existente e adapte.
+#
+# TODO (Fase 3): configurar autenticação completa para Cloudflare Pages.
+# Referência: https://decapcms.org/docs/cloudflare-pages/
+# =============================================================================
+
+backend:
+  name: github                          # autenticação via GitHub OAuth
+  repo: researchgroups-ufma/lafim       # repositório do projeto
+  branch: main                          # branch de produção
+
+media_folder: public/uploads            # onde as imagens são salvas no repositório
+public_folder: /uploads                 # caminho público das imagens no site
+locale: pt                              # idioma do painel editorial
+
+collections:
+
+  # ── Apresentação ────────────────────────────────────────────────────────────
+  # Arquivo único — não cria múltiplas entradas, apenas edita o index.md
+  - name: "about"
+    label: "Apresentação"
+    files:
+      - name: "about"
+        label: "Texto Institucional"
+        file: "content/about/index.md"
+        fields:
+          - { label: "Título",         name: "title",       widget: "string" }
+          - { label: "Subtítulo",      name: "subtitle",    widget: "string",   required: false }
+          - { label: "Missão",         name: "mission",     widget: "text" }
+          - { label: "Histórico",      name: "body",        widget: "markdown" }
+          - { label: "Imagem do Hero", name: "hero_image",  widget: "image",    required: false }
+
+  # ── Membros ─────────────────────────────────────────────────────────────────
+  # Coleção com múltiplas entradas — cada membro é um arquivo .md separado
+  - name: "members"
+    label: "Membros"
+    folder: "content/members"
+    create: true                        # permite criar novos membros pelo painel
+    slug: "{{slug}}"                    # nome do arquivo gerado a partir do título
+    fields:
+      - { label: "Nome completo",   name: "title",       widget: "string" }
+      - label: "Função"
+        name: "role"
+        widget: "select"
+        options: ["Coordenador", "Pesquisador Sênior", "Pós-Doutorando", "Doutorando", "Mestrando", "Iniciação Científica", "Egresso", "Colaborador Externo"]
+      - { label: "Afiliação",       name: "affiliation", widget: "string" }
+      - { label: "Bio",             name: "bio",         widget: "text" }
+      - { label: "Foto",            name: "photo",       widget: "image",   required: false }
+      - { label: "E-mail",          name: "email",       widget: "string",  required: false }
+      - { label: "Lattes",          name: "lattes",      widget: "string",  required: false }
+      - { label: "ORCID",           name: "orcid",       widget: "string",  required: false }
+      - { label: "Google Scholar",  name: "scholar",     widget: "string",  required: false }
+      - { label: "arXiv",           name: "arxiv",       widget: "string",  required: false }
+      - { label: "Linha de pesquisa", name: "research_area", widget: "string", required: false }
+      - label: "Bolsa"
+        name: "scholarship"
+        widget: "select"
+        required: false
+        options: ["CAPES", "CNPq", "FAPEMA", "Sem bolsa"]
+      - { label: "Ano de início",              name: "year_start", widget: "string", required: false }
+      - { label: "Ano de conclusão (egressos)", name: "year_end",   widget: "string", required: false }
+
+  # ── Linhas de Pesquisa ──────────────────────────────────────────────────────
+  - name: "research"
+    label: "Linhas de Pesquisa"
+    folder: "content/research"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Nome",             name: "title",   widget: "string" }
+      - { label: "Resumo curto",     name: "summary", widget: "text" }
+      - { label: "Descrição completa", name: "body",  widget: "markdown" }
+      - { label: "Imagem",           name: "image",   widget: "image",    required: false }
+
+  # ── Publicações ─────────────────────────────────────────────────────────────
+  - name: "publications"
+    label: "Publicações"
+    folder: "content/publications"
+    create: true
+    slug: "{{year}}-{{slug}}"           # ex: 2024-titulo-do-artigo.md
+    fields:
+      - { label: "Título",          name: "title",         widget: "string" }
+      - { label: "Autores",         name: "authors",       widget: "string" }
+      - { label: "Ano",             name: "year",          widget: "number" }
+      - { label: "Periódico",       name: "journal",       widget: "string",  required: false }
+      - { label: "DOI",             name: "doi",           widget: "string",  required: false }
+      - { label: "arXiv ID",        name: "arxiv",         widget: "string",  required: false }
+      - label: "Tipo"
+        name: "type"
+        widget: "select"
+        options: ["Artigo", "Preprint", "Tese", "Dissertação", "Livro", "Capítulo"]
+      - { label: "Linha de pesquisa", name: "research_area", widget: "string",  required: false }
+      - { label: "Em destaque",     name: "featured",      widget: "boolean", default: false }
+
+  # ── Notícias ────────────────────────────────────────────────────────────────
+  - name: "news"
+    label: "Notícias"
+    folder: "content/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{slug}}" # ex: 2024-03-titulo-da-noticia.md
+    fields:
+      - { label: "Título",         name: "title",       widget: "string" }
+      - { label: "Data",           name: "date",        widget: "datetime" }
+      - label: "Categoria"
+        name: "category"
+        widget: "select"
+        options: ["Publicação", "Defesa", "Premiação", "Visita", "Mídia", "Outros"]
+      - { label: "Resumo",         name: "excerpt",     widget: "text" }
+      - { label: "Conteúdo",       name: "body",        widget: "markdown" }
+      - { label: "Imagem de capa", name: "cover_image", widget: "image",   required: false }

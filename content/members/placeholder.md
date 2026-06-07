@@ -1,0 +1,16 @@
+﻿---
+title: "Nome do Membro"
+role: "Coordenador"
+affiliation: "Universidade Federal do Maranhão"
+bio: "Breve biografia do pesquisador."
+photo: ""
+email: ""
+lattes: ""
+orcid: ""
+scholar: ""
+arxiv: ""
+research_area: ""
+scholarship: ""
+year_start: ""
+year_end: ""
+---
