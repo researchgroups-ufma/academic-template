@@ -1,23 +1,20 @@
 ﻿/**
  * SideNav — Menu de navegação lateral fixo no lado direito
  *
- * Inspirado no layout do Unearthly Materials:
- *   - Posicionado fixo no lado direito da tela
+ * Comportamento:
+ *   - Posicionado fixo no lado direito da tela, centralizado verticalmente
  *   - Links verticais separados por linhas horizontais
- *   - Texto alinhado à direita
- *   - Link ativo destacado em âmbar dourado
- *   - Hover com transição suave de cor
+ *   - Link ativo destacado em âmbar dourado via usePathname()
+ *   - Item "Pesquisa" tem subitem "Infraestrutura" que aparece quando
+ *     a rota atual começa com /research
+ *
+ * Fase 4: animações com Framer Motion:
+ *   - Subitem desliza com AnimatePresence + motion.div
+ *   - Indicador âmbar animado acompanha o link ativo (layoutId)
+ *   - Entrada dos links com stagger ao carregar a página
  *
  * Dados lidos de lib/config.ts:
  *   - navLinks — array com label e href de cada item do menu
- *
- * Para adicionar ou remover itens do menu:
- *   Edite apenas o array navLinks em lib/config.ts.
- *
- * Usado em: app/(site)/layout.tsx (substitui o Header)
- *
- * ATENÇÃO: precisa de "use client" para usar usePathname()
- * que detecta a rota atual e destaca o link ativo.
  */
 
 "use client";
@@ -26,6 +23,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navLinks } from "@/lib/config";
 
+// Subitens de cada link principal
+// Para adicionar subitens a outro link no futuro,
+// adicione uma nova entrada neste objeto
+const SUB_ITEMS: Record<string, { label: string; href: string }[]> = {
+  "/research": [
+    { label: "Infraestrutura", href: "/research/infrastructure" },
+  ],
+};
+
 export default function SideNav() {
   const pathname = usePathname();
 
@@ -33,49 +39,86 @@ export default function SideNav() {
     <nav
       aria-label="Navegação principal"
       style={{
-        position: "fixed",       /* fixo — não some ao rolar a página          */
-        top: "50%",              /* centralizado verticalmente na tela          */
-        right: "2.5rem",        /* distância da borda direita                  */
-        transform: "translateY(-50%)", /* ajuste fino para centralização real  */
-        zIndex: 100,             /* acima de todo o conteúdo da página          */
+        position: "fixed",
+        top: "50%",
+        right: "2.5rem",
+        transform: "translateY(-50%)",
+        zIndex: 100,
         display: "flex",
         flexDirection: "column",
       }}
     >
       {navLinks.map((link, index) => {
-        const isActive = pathname === link.href;
+        const isActive =
+          pathname === link.href || pathname.startsWith(link.href + "/");
+        const subItems = SUB_ITEMS[link.href];
+
+        // Exibe subitens quando a rota atual é o link pai ou uma sub-rota dele
+        const showSubItems =
+          subItems && (isActive || pathname.startsWith(link.href + "/"));
 
         return (
           <div key={link.href}>
 
-            {/* Linha separadora acima de cada item (incluindo o primeiro) */}
+            {/* Linha separadora acima de cada item */}
             <div
               style={{
                 width: "100%",
                 height: "1px",
-                backgroundColor: "rgba(245, 245, 240, 0.2)", /* branco sutil  */
+                backgroundColor: "rgba(245, 245, 240, 0.2)",
               }}
             />
 
-            {/* Link de navegação */}
+            {/* Link principal */}
             <Link
               href={link.href}
               style={{
                 display: "block",
-                textAlign: "right",          /* texto alinhado à direita       */
+                textAlign: "right",
                 padding: "0.6rem 0",
                 fontSize: "0.875rem",
                 fontWeight: isActive ? 500 : 400,
                 letterSpacing: "0.04em",
                 color: isActive
-                  ? "var(--color-primary)"     /* ativo — âmbar dourado        */
-                  : "var(--color-text)",        /* inativo — branco             */
+                  ? "var(--color-primary)"
+                  : "var(--color-text)",
                 transition: "color 0.15s ease",
-                whiteSpace: "nowrap",          /* impede quebra de linha        */
+                whiteSpace: "nowrap",
               }}
             >
               {link.label}
             </Link>
+
+            {/* Subitens — visíveis quando o link pai está ativo */}
+            {/* TODO (Fase 4): substituir por AnimatePresence + motion.div */}
+            {showSubItems &&
+              subItems.map((sub) => {
+                const subActive = pathname === sub.href;
+                return (
+                  <Link
+                    key={sub.href}
+                    href={sub.href}
+                    style={{
+                      display: "block",
+                      textAlign: "right",
+                      padding: "0.35rem 0",
+                      fontSize: "0.775rem",
+                      letterSpacing: "0.04em",
+                      color: subActive
+                        ? "var(--color-primary)"
+                        : "var(--color-text-muted)",
+                      transition: "color 0.15s ease",
+                      whiteSpace: "nowrap",
+                      borderRight: subActive
+                        ? "2px solid var(--color-primary)"
+                        : "2px solid transparent",
+                      paddingRight: "0.5rem",
+                    }}
+                  >
+                    {sub.label}
+                  </Link>
+                );
+              })}
 
             {/* Linha separadora abaixo do último item */}
             {index === navLinks.length - 1 && (
