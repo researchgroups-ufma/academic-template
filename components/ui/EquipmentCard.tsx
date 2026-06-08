@@ -19,6 +19,7 @@
 
 "use client";
 
+import { motion } from "framer-motion";
 import {
   MorphingDialog,
   MorphingDialogTrigger,
@@ -57,6 +58,11 @@ export default function EquipmentCard({
       }}
     >
       {/* ── Card fechado (trigger) ─────────────────────────────────────────── */}
+      <motion.div
+        whileHover={{ scale: 1.03, y: -4 }}
+        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        style={{ height: "100%" }}
+      >
       <MorphingDialogTrigger
         style={{
           backgroundColor: "var(--color-bg-elevated)",
@@ -143,6 +149,7 @@ export default function EquipmentCard({
           </p>
         </div>
       </MorphingDialogTrigger>
+      </motion.div>
 
       {/* ── Modal expandido ───────────────────────────────────────────────── */}
       <MorphingDialogContainer>
