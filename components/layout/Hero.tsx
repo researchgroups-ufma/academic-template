@@ -142,6 +142,7 @@ export default function Hero({ images, subtitle }: HeroProps) {
             height: "auto",
             width: "min(1400px, 110vw)",
             marginBottom: "1.5rem",
+            opacity: 0,
            }}
            />
 
