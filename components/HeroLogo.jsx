@@ -124,7 +124,7 @@ export default function HeroLogo() {
                 {/* SVG embutido (paths de new_lafim.svg) */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 232.35 48.29"
+          viewBox="-2 -22 236 92"
           width="100%"
           height="auto"
           role="img"
