@@ -5,6 +5,8 @@ description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
   felis, porta et diam eu, accumsan sodales dolor. Sed id laoreet erat, id
   imperdiet risus. Curabitur at lorem nibh. Nulla molestie nisi lacinia nisl
   pulvinar tempor. Aenean quis posuere lectus, ut vulputate nulla.
-image_position: left
+image: /uploads/anvil.webp
+image_caption: Diamond Anvil Cell
+image_position: right
 order: 2
 ---
