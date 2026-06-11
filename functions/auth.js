@@ -17,7 +17,7 @@ export async function onRequest(context) {
   const params = new URLSearchParams({
     client_id: env.GITHUB_CLIENT_ID,
     scope: "repo,user",        // permissões necessárias para o Decap CMS
-    redirect_uri: `https://lafim-ufma.pages.dev/callback`,
+    redirect_uri: `https://lafim.pages.dev/callback`,
   });
 
   const githubAuthUrl = `https://github.com/login/oauth/authorize?${params}`;

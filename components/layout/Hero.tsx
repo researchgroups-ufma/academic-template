@@ -133,15 +133,16 @@ export default function Hero({ images, subtitle }: HeroProps) {
 
         {/* Logo SVG do LaFiM */}
          <motion.img
-           src="/logo/lafim_branco.svg"
+           src="/logo/new_lafim.svg"
            alt="LaFiM — Laboratório de Física dos Materiais"
            initial={mounted ? { opacity: 0, y: 20 } : { opacity: 0, y: 0 }}
            animate={{ opacity: 1, y: 0 }}
            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
            style={{
             height: "auto",
-            width: "min(1400px, 110vw)",
+            width: "min(1800px, 110vw)",
             marginBottom: "1.5rem",
+            filter: "brightness(0) invert(1)"
            }}
            />
 
