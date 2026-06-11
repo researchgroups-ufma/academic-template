@@ -73,7 +73,8 @@ export default function Hero({ images, subtitle }: HeroProps) {
         height: "100svh",        /* ocupa exatamente a altura visível da tela */
         overflow: "hidden",
         display: "flex",
-        alignItems: "flex-start",  /* conteúdo ancorado no canto inferior       */
+        alignItems: "center",  /* centraliza verticalmente no hero */
+        justifyContent: "center", /* centraliza horizontalmente também */
       }}
     >
 
@@ -141,7 +142,7 @@ export default function Hero({ images, subtitle }: HeroProps) {
            style={{
             height: "auto",
             width: "min(1800px, 110vw)",
-            marginBottom: "1.5rem",
+            marginBottom: "1rem",
             filter: "brightness(0) invert(1)"
            }}
            />
