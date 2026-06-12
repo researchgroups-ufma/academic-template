@@ -84,20 +84,10 @@ export default async function ResearchPage() {
                             fontSize: "1.3rem",
                             fontWeight: 500,
                             color: "var(--color-text)",
-                            marginBottom: "0.4rem",
                           }}
                         >
                           {line.title as string}
                         </h2>
-                        <p
-                          style={{
-                            fontSize: "0.9rem",
-                            color: "var(--color-text-muted)",
-                            fontWeight: 300,
-                          }}
-                        >
-                          {line.summary as string}
-                        </p>
                       </div>
 
                       {/* Descrição completa — renderiza o body como texto simples */}

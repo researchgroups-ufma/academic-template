@@ -29,8 +29,11 @@ export async function getCollection(folder: string): Promise<ContentItem[]> {
 
   return files.map((filename) => {
     const raw = fs.readFileSync(path.join(dir, filename), "utf-8");
-    const { data } = matter(raw);
-    return { slug: filename.replace(/\.md$/, ""), ...data };
+    const { data, content } = matter(raw);
+    // body = corpo markdown do arquivo (campo "Descrição completa" no CMS).
+    // Espelha getSingleFile; a homepage usa só `summary`, a página de
+    // pesquisa usa `body` para exibir a descrição completa.
+    return { slug: filename.replace(/\.md$/, ""), body: content, ...data };
   });
 }
 
