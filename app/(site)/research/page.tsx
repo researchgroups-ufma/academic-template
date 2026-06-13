@@ -8,6 +8,7 @@
 
 import { getCollection } from "@/lib/mdx";
 import PageHeader from "@/components/ui/PageHeader";
+import Image from "next/image";
 
 export const metadata = { title: "Pesquisa" };
 
@@ -108,11 +109,14 @@ export default async function ResearchPage() {
                     {/* Imagem — só renderiza se existir */}
                     {(line.image as string | undefined) && (
                       <figure>
-                        <img
+                        <Image
                           src={line.image as string}
                           alt={line.title as string}
+                          width={280}
+                          height={210}
                           style={{
                             width: "100%",
+                            height: "auto",
                             border: "1px solid var(--color-border-strong)",
                           }}
                         />

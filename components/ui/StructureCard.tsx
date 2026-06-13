@@ -22,6 +22,7 @@
 
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 type StructureCardProps = {
@@ -48,6 +49,14 @@ export default function StructureCard({
       {/* ── Card fechado ──────────────────────────────────────────────────── */}
       <div
         onClick={() => setOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setOpen(true);
+          }
+        }}
+        role="button"
+        tabIndex={0}
         style={{
           cursor: "pointer",
           backgroundColor: "var(--color-bg-elevated)",
@@ -61,6 +70,7 @@ export default function StructureCard({
         {/* Foto ou placeholder com inicial */}
         <div
           style={{
+            position: "relative",
             width: "100%",
             aspectRatio: "1 / 1",
             backgroundColor: "var(--color-bg-subtle)",
@@ -71,10 +81,12 @@ export default function StructureCard({
           }}
         >
           {photo ? (
-            <img
+            <Image
               src={photo}
               alt={`Foto de ${name}`}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              fill
+              sizes="(max-width: 768px) 100vw, 240px"
+              style={{ objectFit: "cover" }}
             />
           ) : (
             <span
@@ -124,6 +136,14 @@ export default function StructureCard({
           {/* Overlay escuro — clique fora fecha o modal */}
           <div
             onClick={() => setOpen(false)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+                setOpen(false);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label="Fechar"
             style={{
               position: "fixed",
               inset: 0,
@@ -151,6 +171,7 @@ export default function StructureCard({
           >
             {/* Botão fechar */}
             <button
+              type="button"
               onClick={() => setOpen(false)}
               style={{
                 position: "absolute",
@@ -181,6 +202,7 @@ export default function StructureCard({
               {/* Foto maior */}
               <div
                 style={{
+                  position: "relative",
                   width: "140px",
                   aspectRatio: "0.85",
                   backgroundColor: "var(--color-bg-subtle)",
@@ -193,10 +215,12 @@ export default function StructureCard({
                 }}
               >
                 {photo ? (
-                  <img
+                  <Image
                     src={photo}
                     alt={`Foto de ${name}`}
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    fill
+                    sizes="140px"
+                    style={{ objectFit: "cover" }}
                   />
                 ) : (
                   <span
@@ -258,9 +282,9 @@ export default function StructureCard({
             {/* Bio completa */}
             {bio && (
               <div style={{ borderTop: "1px solid var(--color-border)", paddingTop: "1.5rem" }}>
-                {bio.split("\n\n").map((paragraph, index) => (
+                {bio.split("\n\n").map((paragraph) => (
                   <p
-                    key={index}
+                    key={paragraph}
                     style={{
                       fontSize: "0.9rem",
                       lineHeight: 1.8,

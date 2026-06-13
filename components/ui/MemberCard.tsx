@@ -21,6 +21,8 @@
  *   photo         — caminho da imagem em /uploads/ (opcional)
  */
 
+import Image from "next/image";
+
 type MemberCardProps = {
   name: string;
   role: string;
@@ -37,6 +39,7 @@ export default function MemberCard({ name, role, research_area, photo }: MemberC
           independente da largura do card no grid                           */}
       <div
         style={{
+          position: "relative",
           width: "100%",
           aspectRatio: "1 / 1",
           borderRadius: "0.375rem",
@@ -46,10 +49,12 @@ export default function MemberCard({ name, role, research_area, photo }: MemberC
       >
         {photo ? (
           /* Imagem real do membro — objectFit cover preenche sem distorcer */
-          <img
+          <Image
             src={photo}
             alt={`Foto de ${name}`}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            fill
+            sizes="(max-width: 768px) 100vw, 240px"
+            style={{ objectFit: "cover" }}
           />
         ) : (
           /* Placeholder com inicial do nome quando não há foto disponível */

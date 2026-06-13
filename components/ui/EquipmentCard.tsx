@@ -226,9 +226,9 @@ export default function EquipmentCard({
               }}
             >
               {description ? (
-                description.split("\n\n").map((paragraph, index) => (
+                description.split("\n\n").map((paragraph) => (
                   <p
-                    key={index}
+                    key={paragraph}
                     style={{
                       fontSize: "0.9rem",
                       lineHeight: 1.8,

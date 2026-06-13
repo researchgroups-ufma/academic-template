@@ -18,11 +18,12 @@ import { siteConfig } from "@/lib/config";
 export const metadata = { title: "Infraestrutura" };
 
 export default async function InfrastructurePage() {
-  // Texto introdutório da página
-  const pageInfo = await getSingleFile("equipment/index.md");
+  // Texto introdutório e lista de equipamentos — leituras independentes, em paralelo
+  const [pageInfo, allEquipment] = await Promise.all([
+    getSingleFile("equipment/index.md"),
+    getCollection("equipment"),
+  ]);
 
-  // Lista de equipamentos — remove placeholder
-  const allEquipment = await getCollection("equipment");
   const equipment = allEquipment.filter(
     (e) => e.slug !== "placeholder" && e.slug !== "index"
   );

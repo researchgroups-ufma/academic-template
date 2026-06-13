@@ -27,6 +27,7 @@
 
 "use client";
 
+import Image from "next/image";
 import {
   MorphingDialog,
   MorphingDialogTrigger,
@@ -146,6 +147,7 @@ export default function MemberCardModal({
             {/* Foto ou placeholder com inicial */}
             <div
               style={{
+                position: "relative",
                 width: "140px",
                 aspectRatio: "0.85",
                 backgroundColor: "var(--color-bg-subtle)",
@@ -158,10 +160,12 @@ export default function MemberCardModal({
               }}
             >
               {photo ? (
-                <img
+                <Image
                   src={photo}
                   alt={`Foto de ${name}`}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  fill
+                  sizes="140px"
+                  style={{ objectFit: "cover" }}
                 />
               ) : (
                 <span
@@ -239,9 +243,9 @@ export default function MemberCardModal({
               }}
             >
               <div style={{ borderTop: "1px solid var(--color-border)", paddingTop: "1.5rem" }}>
-                {bio.split("\n\n").map((paragraph, index) => (
+                {bio.split("\n\n").map((paragraph) => (
                   <p
-                    key={index}
+                    key={paragraph}
                     style={{
                       fontSize: "0.9rem",
                       lineHeight: 1.8,

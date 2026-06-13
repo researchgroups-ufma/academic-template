@@ -19,6 +19,7 @@ import { getCollection } from "@/lib/mdx";
 import { siteConfig } from "@/lib/config";
 import PageHeader from "@/components/ui/PageHeader";
 import MemberCardModal from "@/components/ui/MemberCardModal";
+import Image from "next/image";
 
 // Plurais irregulares — os demais recebem "s" simples
 const ROLE_PLURAL: Record<string, string> = {
@@ -84,11 +85,12 @@ export default async function MembersPage() {
                 {/* Foto ou placeholder com inicial */}
                 <figure style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                   {(coordinator.photo as string | undefined) ? (
-                    <img
+                    <Image
                       src={coordinator.photo as string}
                       alt={`Foto de ${coordinator.title as string}`}
+                      width={160}
+                      height={188}
                       style={{
-                        width: "160px",
                         aspectRatio: "0.85",
                         objectFit: "cover",
                         border: "1px solid var(--color-border-strong)",
@@ -127,8 +129,8 @@ export default async function MembersPage() {
 
                   {/* Bio — parágrafos separados por linha em branco no frontmatter */}
                   <div style={{ marginBottom: "1.25rem" }}>
-                    {typeof coordinator.bio === "string" && coordinator.bio.split("\n\n").map((p, i) => (
-                      <p key={i} style={{ fontSize: "0.92rem", lineHeight: 1.8, color: "var(--color-text-muted)", fontWeight: 300, marginBottom: "0.85rem" }}>
+                    {typeof coordinator.bio === "string" && coordinator.bio.split("\n\n").map((p) => (
+                      <p key={p} style={{ fontSize: "0.92rem", lineHeight: 1.8, color: "var(--color-text-muted)", fontWeight: 300, marginBottom: "0.85rem" }}>
                         {p}
                       </p>
                     ))}

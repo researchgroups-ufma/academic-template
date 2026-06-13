@@ -13,6 +13,8 @@
  *   highlights — array de destaques lidos de content/highlights/
  */
 
+import Image from "next/image";
+
 type Highlight = {
   slug: string;
   title: string;
@@ -60,11 +62,14 @@ export default function HighlightsSection({ highlights }: HighlightsSectionProps
               {/* Imagem */}
               {item.image && (
                 <figure style={{ display: "flex", flexDirection: "column", alignItems: "center", order: imageOnLeft ? 1 : 2 }}>
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.image_caption || item.title}
+                    width={260}
+                    height={195}
                     style={{
                       width: "100%",
+                      height: "auto",
                       border: "1px solid var(--color-border-strong)",
                     }}
                   />

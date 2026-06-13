@@ -9,6 +9,7 @@
 
 import { getCollection, formatDate } from "@/lib/mdx";
 import PageHeader from "@/components/ui/PageHeader";
+import Image from "next/image";
 
 export const metadata = { title: "Notícias" };
 
@@ -96,11 +97,14 @@ export default async function NewsPage() {
 
                     {/* Imagem de capa — só renderiza se existir */}
                     {(item.cover_image as string | undefined) && (
-                      <img
+                      <Image
                         src={item.cover_image as string}
                         alt={item.title as string}
+                        width={200}
+                        height={113}
                         style={{
                           width: "100%",
+                          height: "auto",
                           aspectRatio: "16/9",
                           objectFit: "cover",
                           border: "1px solid var(--color-border-strong)",

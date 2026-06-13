@@ -77,6 +77,7 @@ export default function PublicationsFilter({ publications }: PublicationsFilterP
         {FILTERS.map((filter) => (
           <button
             key={filter.value}
+            type="button"
             onClick={() => setActiveFilter(filter.value)}
             aria-pressed={activeFilter === filter.value}
             style={{
@@ -95,7 +96,7 @@ export default function PublicationsFilter({ publications }: PublicationsFilterP
                 : "var(--color-text-muted)",
               cursor: "pointer",
               fontFamily: "var(--font-body)",
-              transition: "all 0.15s ease",
+              transition: "border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease",
             }}
           >
             {filter.label}

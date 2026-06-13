@@ -51,6 +51,8 @@ export default function Hero({ subtitle }: HeroProps) {
         muted
         loop
         playsInline
+        aria-hidden="true"
+        tabIndex={-1}
         poster="/images/hero-poster.jpg"
         style={{
           position: "absolute",

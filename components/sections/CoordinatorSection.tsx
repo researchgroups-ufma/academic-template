@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { InView } from "@/components/motion-primitives/in-view";
 
 /**
@@ -58,7 +59,7 @@ export default function CoordinatorSection({
               {/* Bio — último parágrafo em tom secundário (.hp-sec) */}
               {paragraphs.map((paragraph, index) => (
                 <p
-                  key={index}
+                  key={paragraph}
                   className={index === paragraphs.length - 1 && paragraphs.length > 1 ? "hp-sec" : undefined}
                 >
                   {paragraph}
@@ -83,7 +84,7 @@ export default function CoordinatorSection({
             {/* ── Foto ───────────────────────────────────────────────────── */}
             <div className="hp-coord__photo">
               {photo ? (
-                <img src={photo} alt={`Foto de ${name}`} />
+                <Image src={photo} alt={`Foto de ${name}`} fill sizes="(max-width: 860px) 380px, 40vw" style={{ objectFit: "cover" }} />
               ) : (
                 <span className="hp-ph">Foto do<br />coordenador<br />4 : 5</span>
               )}

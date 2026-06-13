@@ -58,9 +58,9 @@ export default async function AboutPage() {
               </h2>
               <span className="title-accent" />
               <div style={{ maxWidth: "720px" }}>
-                {(about.body as string).split("\n\n").map((paragraph, index) => (
+                {(about.body as string).split("\n\n").map((paragraph) => (
                   <p
-                    key={index}
+                    key={paragraph}
                     style={{
                       fontSize: "0.97rem",
                       lineHeight: 1.85,
