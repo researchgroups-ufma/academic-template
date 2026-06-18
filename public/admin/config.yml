@@ -11,8 +11,9 @@
 
 backend:
   name: github                          # autenticação via GitHub OAuth
-  repo: researchgroups-ufma/lafim       # repositório do projeto
+  repo: researchgroups-ufma/academic-template       # repositório do projeto
   branch: main                          # branch de produção
+  base_url: https://decap-proxy.and-near.workers.dev # CMS
 
 media_folder: public/uploads            # onde as imagens são salvas no repositório
 public_folder: /uploads                 # caminho público das imagens no site
