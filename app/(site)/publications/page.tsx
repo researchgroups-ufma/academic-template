@@ -12,7 +12,9 @@ import { getCollection } from "@/lib/mdx";
 
 // Estilo compartilhado dos links externos (DOI, arXiv, PDF)
 const linkStyle: CSSProperties = {
-  fontSize: "0.8rem",
+  fontFamily: "var(--font-mono)",
+  fontSize: "0.78rem",
+  letterSpacing: "0.03em",
   color: "var(--color-primary)",
 };
 
@@ -25,9 +27,11 @@ export default async function PublicationsPage() {
   return (
     <section className="section-padding">
       <div className="container-site">
+        <p className="eyebrow" style={{ marginBottom: "0.75rem" }}>Produção científica</p>
         <h1 className="section-title">Publicações</h1>
         <span className="title-accent" />
 
+        {/* Lista de referências — ano em monoespaçada à esquerda, registro à direita */}
         <div>
           {publications.map((pub) => {
             const title = pub.title as string;
@@ -42,55 +46,63 @@ export default async function PublicationsPage() {
             return (
               <article
                 key={pub.slug}
-                style={{ padding: "1.5rem 0", borderBottom: "1px solid var(--color-border)" }}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "4.5rem 1fr",
+                  gap: "1.25rem",
+                  padding: "1.75rem 0",
+                  borderTop: "1px solid var(--color-border)",
+                }}
               >
-                {/* Badge com o tipo da publicação */}
-                {type && (
-                  <div style={{ marginBottom: "0.6rem" }}>
-                    <span className="badge badge-muted">{type}</span>
-                  </div>
-                )}
+                {/* Coluna do ano — coordenada bibliográfica */}
+                <span className="meta" style={{ paddingTop: "0.15rem", color: "var(--color-primary)" }}>
+                  {year ?? "—"}
+                </span>
 
-                {/* Título */}
-                <p style={{ fontWeight: 500, marginBottom: "0.25rem", lineHeight: 1.4 }}>
-                  {title}
-                </p>
+                <div>
+                  {/* Título */}
+                  <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.3rem", fontWeight: 500, marginBottom: "0.4rem", lineHeight: 1.3 }}>
+                    {title}
+                  </h2>
 
-                {/* Autores e ano */}
-                {authors && (
-                  <p style={{ fontSize: "0.875rem", color: "var(--color-text-muted)", marginBottom: "0.25rem" }}>
-                    {authors}
-                    {year ? ` · ${year}` : ""}
+                  {/* Autores */}
+                  {authors && (
+                    <p style={{ fontSize: "0.92rem", color: "var(--color-text-muted)", marginBottom: "0.3rem" }}>
+                      {authors}
+                    </p>
+                  )}
+
+                  {/* Periódico + tipo */}
+                  <p style={{ marginBottom: "0.75rem", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.6rem" }}>
+                    {journal && (
+                      <span style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: "0.95rem", color: "var(--color-text-muted)" }}>
+                        {journal}
+                      </span>
+                    )}
+                    {type && <span className="badge badge-muted">{type}</span>}
                   </p>
-                )}
 
-                {/* Periódico */}
-                {journal && (
-                  <p style={{ fontSize: "0.8rem", color: "var(--color-text-subtle)", marginBottom: "0.5rem" }}>
-                    {journal}
-                  </p>
-                )}
-
-                {/* Links externos — apenas os que existirem */}
-                {(doi || arxiv || pdf) && (
-                  <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-                    {doi && (
-                      <a href={`https://doi.org/${doi}`} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                        DOI ↗
-                      </a>
-                    )}
-                    {arxiv && (
-                      <a href={arxiv} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                        arXiv ↗
-                      </a>
-                    )}
-                    {pdf && (
-                      <a href={pdf} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                        PDF ↗
-                      </a>
-                    )}
-                  </div>
-                )}
+                  {/* Links externos — apenas os que existirem */}
+                  {(doi || arxiv || pdf) && (
+                    <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap" }}>
+                      {doi && (
+                        <a href={`https://doi.org/${doi}`} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                          DOI ↗
+                        </a>
+                      )}
+                      {arxiv && (
+                        <a href={arxiv} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                          arXiv ↗
+                        </a>
+                      )}
+                      {pdf && (
+                        <a href={pdf} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                          PDF ↗
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
               </article>
             );
           })}

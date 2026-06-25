@@ -8,7 +8,7 @@
  *   - Link da página atual destacado em âmbar via usePathname()
  *
  * Dados lidos de lib/config.ts:
- *   - siteConfig.acronym — sigla exibida como logo (ex: "LaFiM")
+ *   - siteConfig.acronym — sigla exibida como logo (ex: "Template")
  *   - navLinks           — array com label e href de cada item do menu
  *
  * Para adicionar ou remover itens do menu:
@@ -40,9 +40,9 @@ export default function Header() {
         right: 0,
         zIndex: 100,                /* fica acima de todo o conteúdo da página */
         borderBottom: "1px solid var(--color-border)",
-        backdropFilter: "blur(12px)",           /* efeito de vidro fosco      */
-        WebkitBackdropFilter: "blur(12px)",     /* suporte Safari/iOS         */
-        backgroundColor: "rgba(8, 8, 8, 0.85)", /* preto com 85% de opacidade */
+        backdropFilter: "blur(12px)",                 /* vidro fosco          */
+        WebkitBackdropFilter: "blur(12px)",           /* suporte Safari/iOS   */
+        backgroundColor: "rgba(247, 247, 244, 0.82)", /* papel translúcido    */
       }}
     >
       <div
@@ -60,14 +60,24 @@ export default function Header() {
         <Link
           href="/"
           style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "1.25rem",
-            fontWeight: 700,
-            color: "var(--color-primary)", /* sigla em âmbar dourado          */
-            letterSpacing: "0.02em",
+            display: "flex",
+            alignItems: "baseline",
+            gap: "0.5rem",
           }}
         >
-          {siteConfig.acronym}
+          {/* Marcador de rubrica + sigla em tinta */}
+          <span style={{ color: "var(--color-primary)", fontFamily: "var(--font-mono)", fontSize: "0.9rem" }}>§</span>
+          <span
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "1.3rem",
+              fontWeight: 600,
+              color: "var(--color-text)",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            {siteConfig.acronym}
+          </span>
         </Link>
 
         {/* ── Links de navegação ────────────────────────────────────────────

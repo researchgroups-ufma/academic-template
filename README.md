@@ -1,6 +1,6 @@
-﻿# LaFiM — Site Institucional
+﻿# Template — Site para Grupos Acadêmicos
 
-Site institucional do **Laboratório de Física dos Materiais (LaFiM)** da UFMA.
+Template de site institucional para grupos de pesquisa acadêmica.
 
 ## Stack
 
@@ -10,7 +10,7 @@ Site institucional do **Laboratório de Física dos Materiais (LaFiM)** da UFMA.
 | Estilo      | Tailwind CSS v4                     |
 | CMS         | Decap CMS                           |
 | Hospedagem  | Cloudflare Pages                    |
-| Repositório | GitHub (researchgroups-ufma/lafim)  |
+| Repositório | GitHub (researchgroups-ufma/academic-template) |
 
 ## Desenvolvimento local
 

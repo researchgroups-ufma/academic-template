@@ -18,6 +18,7 @@ export default async function ResearchPage() {
   return (
     <section className="section-padding">
       <div className="container-site">
+        <p className="eyebrow" style={{ marginBottom: "0.75rem" }}>O que investigamos</p>
         <h1 className="section-title">Linhas de Pesquisa</h1>
         <span className="title-accent" />
 

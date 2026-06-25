@@ -10,13 +10,14 @@
 import type { CSSProperties } from "react";
 import { siteConfig } from "@/lib/config";
 
-// Estilo dos rótulos (uppercase em âmbar)
+// Rótulos — running head monoespaçado
 const labelStyle: CSSProperties = {
+  fontFamily: "var(--font-mono)",
   textTransform: "uppercase",
-  letterSpacing: "0.1em",
-  fontSize: "0.8rem",
-  fontWeight: 600,
-  color: "var(--color-primary)",
+  letterSpacing: "0.16em",
+  fontSize: "0.72rem",
+  fontWeight: 500,
+  color: "var(--color-text-subtle)",
   marginBottom: "0.5rem",
 };
 
@@ -24,6 +25,7 @@ export default function ContactPage() {
   return (
     <section className="section-padding">
       <div className="container-site">
+        <p className="eyebrow" style={{ marginBottom: "0.75rem" }}>Fale com o grupo</p>
         <h1 className="section-title">Contato</h1>
         <span className="title-accent" />
 

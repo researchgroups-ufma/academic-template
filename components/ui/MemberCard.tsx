@@ -61,9 +61,9 @@ export default function MemberCard({ name, role, research_area, photo }: MemberC
               alignItems: "center",
               justifyContent: "center",
               fontFamily: "var(--font-display)",
-              fontSize: "2rem",
-              fontWeight: 600,
-              color: "var(--color-primary)", /* inicial em âmbar dourado */
+              fontSize: "2.25rem",
+              fontWeight: 500,
+              color: "var(--color-text-subtle)", /* inicial em tinta discreta */
             }}
           >
             {name.charAt(0)} {/* pega apenas a primeira letra do nome */}
@@ -74,16 +74,16 @@ export default function MemberCard({ name, role, research_area, photo }: MemberC
       {/* ── Informações do membro ──────────────────────────────────────────── */}
       <div>
         {/* Nome completo */}
-        <p style={{ fontWeight: 500, marginBottom: "0.25rem" }}>{name}</p>
+        <p style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 500, marginBottom: "0.35rem" }}>{name}</p>
 
-        {/* Função em âmbar — destaca a posição do membro */}
-        <p style={{ fontSize: "0.85rem", color: "var(--color-primary)", marginBottom: "0.25rem" }}>
+        {/* Função — metadado monoespaçado */}
+        <p className="meta" style={{ color: "var(--color-text-muted)", marginBottom: "0.35rem" }}>
           {role}
         </p>
 
         {/* Linha de pesquisa — só renderiza se a prop existir */}
         {research_area && (
-          <p style={{ fontSize: "0.8rem", color: "var(--color-text-subtle)" }}>
+          <p style={{ fontSize: "0.85rem", color: "var(--color-text-subtle)" }}>
             {research_area}
           </p>
         )}

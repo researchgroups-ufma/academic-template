@@ -26,6 +26,7 @@ export default async function MembersPage() {
   return (
     <section className="section-padding">
       <div className="container-site">
+        <p className="eyebrow" style={{ marginBottom: "0.75rem" }}>Quem somos</p>
         <h1 className="section-title">Membros</h1>
         <span className="title-accent" />
 

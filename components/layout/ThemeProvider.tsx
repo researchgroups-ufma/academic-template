@@ -41,6 +41,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     "--color-border-strong": colors.borderStrong,
     "--font-display":        fonts.display,
     "--font-body":           fonts.body,
+    "--font-mono":           fonts.mono,
   } as React.CSSProperties;
 
   // O div raiz recebe todas as variáveis como style inline

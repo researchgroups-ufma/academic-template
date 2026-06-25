@@ -24,6 +24,7 @@ export default async function NewsPage() {
   return (
     <section className="section-padding">
       <div className="container-site">
+        <p className="eyebrow" style={{ marginBottom: "0.75rem" }}>Acontecimentos do grupo</p>
         <h1 className="section-title">Notícias</h1>
         <span className="title-accent" />
 
@@ -73,15 +74,11 @@ export default async function NewsPage() {
                   </div>
                 )}
 
-                <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 500, lineHeight: 1.3 }}>
+                <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", fontWeight: 500, lineHeight: 1.25 }}>
                   {title}
                 </h2>
 
-                {date && (
-                  <p style={{ fontSize: "0.8rem", color: "var(--color-text-subtle)" }}>
-                    {formatDate(date)}
-                  </p>
-                )}
+                {date && <p className="meta">{formatDate(date)}</p>}
 
                 {excerpt && (
                   <p style={{ fontSize: "0.9rem", color: "var(--color-text-muted)" }}>

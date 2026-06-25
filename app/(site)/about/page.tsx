@@ -10,14 +10,15 @@
 import type { CSSProperties } from "react";
 import { getSingleFile } from "@/lib/mdx";
 
-// Estilo dos rótulos de seção (uppercase em âmbar)
+// Rótulos de seção — running head monoespaçado com marcador de rubrica
 const labelStyle: CSSProperties = {
+  fontFamily: "var(--font-mono)",
   textTransform: "uppercase",
-  letterSpacing: "0.1em",
-  fontSize: "0.8rem",
-  fontWeight: 600,
-  color: "var(--color-primary)",
-  marginBottom: "0.75rem",
+  letterSpacing: "0.16em",
+  fontSize: "0.72rem",
+  fontWeight: 500,
+  color: "var(--color-text-subtle)",
+  marginBottom: "0.9rem",
 };
 
 export default async function AboutPage() {
@@ -32,6 +33,7 @@ export default async function AboutPage() {
   return (
     <section className="section-padding">
       <div className="container-site">
+        <p className="eyebrow" style={{ marginBottom: "0.75rem" }}>Sobre o grupo</p>
         <h1 className="section-title">{title ?? "Sobre"}</h1>
         <span className="title-accent" />
         {subtitle && <p className="section-subtitle">{subtitle}</p>}

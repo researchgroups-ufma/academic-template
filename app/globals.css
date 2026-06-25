@@ -1,28 +1,34 @@
-﻿/* =============================================================================
-   globals.css — Estilos globais e sistema de design do LaFiM
-   
+/* =============================================================================
+   globals.css — Estilos globais e sistema de design (Template)
+
+   Conceito visual: "página de rosto de periódico acadêmico".
+   Tinta sobre papel — índigo profundo sobre off-white frio, com a rubrica
+   (vermelho acadêmico) usada apenas como marcador. Metadados em monoespaçada.
+
    REGRA IMPORTANTE (Tailwind v4):
    O Tailwind v4 NÃO gera classes com valores arbitrários.
    Classes como max-w-[900px] ou py-24 NÃO funcionam.
    Use sempre as classes utilitárias definidas aqui (ex: .container-site).
-   
+
    Organização:
      1. Google Fonts        ← deve vir ANTES do Tailwind
      2. Tailwind v4
      3. CSS Variables
      4. Reset de estilos
      5. Classes utilitárias
+     6. Movimento (reveal de carregamento)
 ============================================================================= */
 
 
 /* =============================================================================
    1. GOOGLE FONTS
    Deve vir antes do @import "tailwindcss" — regra do CSS.
-   - Google Sans Flex: fonte display para títulos (variável, peso 100–900)
+   - Newsreader:    serifa de periódico para títulos (display)
    - IBM Plex Sans: fonte de corpo para textos e UI
+   - IBM Plex Mono: fonte utilitária para metadados (anos, DOIs, rótulos)
 ============================================================================= */
 
-@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..900&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap");
 
 
 /* =============================================================================
@@ -35,34 +41,36 @@
 
 /* =============================================================================
    3. CSS VARIABLES — Tokens de design
-   
+
    Sincronizadas com designTokens em lib/config.ts.
-   Se alterar uma cor aqui, atualize também em lib/config.ts.
+   O ThemeProvider injeta os valores de config.ts no runtime e SOBRESCREVE
+   os valores abaixo — mantenha os dois arquivos em sincronia.
 ============================================================================= */
 
 :root {
-  /* Fundos — três níveis de profundidade visual */
-  --color-bg:            #080808;  /* fundo principal — preto quase absoluto  */
-  --color-bg-elevated:   #111111;  /* cards e seções alternadas               */
-  --color-bg-subtle:     #1a1a1a;  /* bordas internas e separadores           */
+  /* Fundos — papel, superfície elevada e poço */
+  --color-bg:            #F7F7F4;  /* papel — off-white neutro-frio (não creme) */
+  --color-bg-elevated:   #FFFFFF;  /* cards e superfícies elevadas              */
+  --color-bg-subtle:     #EFEFE9;  /* poços e seções alternadas                 */
 
-  /* Cor primária — Âmbar dourado */
-  --color-primary:       #E8A020;  /* cor principal de destaque               */
-  --color-primary-hover: #F5B830;  /* versão mais clara para hover            */
-  --color-primary-muted: #C8881A;  /* versão mais escura para estado ativo    */
+  /* Rubrica — vermelho acadêmico, usado só como marcador */
+  --color-primary:       #A8362F;  /* marcadores, links, item ativo             */
+  --color-primary-hover: #8E2A24;  /* hover/estado ativo                        */
+  --color-primary-muted: #C26A5F;  /* filetes e bordas de hover                  */
 
-  /* Texto — hierarquia em três níveis de contraste */
-  --color-text:          #F5F5F0;  /* texto principal — branco quente         */
-  --color-text-muted:    #A0A09A;  /* descrições, metadados, labels           */
-  --color-text-subtle:   #606060;  /* legendas e informações secundárias      */
+  /* Texto — tinta índigo em três níveis de contraste */
+  --color-text:          #1A2030;  /* tinta — cor de marca dominante            */
+  --color-text-muted:    #565E70;  /* descrições, metadados                     */
+  --color-text-subtle:   #7A7F8C;  /* legendas e dados secundários             */
 
-  /* Bordas */
-  --color-border:        #222222;  /* divisores sutis entre seções            */
-  --color-border-strong: #333333;  /* bordas de cards e containers            */
+  /* Filetes */
+  --color-border:        #E4E4DC;  /* divisores sutis sobre o papel            */
+  --color-border-strong: #D2D2C8;  /* bordas de cards e containers             */
 
   /* Tipografia */
-  --font-display: "Google Sans Flex", "Google Sans", sans-serif; /* títulos  */
-  --font-body:    "IBM Plex Sans", system-ui, sans-serif;        /* corpo/UI */
+  --font-display: "Newsreader", Georgia, serif;             /* títulos          */
+  --font-body:    "IBM Plex Sans", system-ui, sans-serif;   /* corpo/UI         */
+  --font-mono:    "IBM Plex Mono", ui-monospace, monospace; /* metadados        */
 }
 
 
@@ -82,18 +90,28 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  line-height: 1.15;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
   color: var(--color-text);
+  font-weight: 500;
 }
 
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
+
+/* Foco visível por teclado — rubrica, em toda a aplicação */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
 
 
 /* =============================================================================
@@ -103,7 +121,7 @@ img { max-width: 100%; display: block; }
 /* Container principal — centraliza e limita a largura do layout */
 .container-site {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1080px;
   margin-inline: auto;
   padding-inline: 1.5rem;
 }
@@ -118,58 +136,166 @@ img { max-width: 100%; display: block; }
   padding-bottom: 5rem;
 }
 
-/* Título de seção — tamanho responsivo via clamp() */
+/* Rótulo monoespaçado — "running head" de periódico.
+   Usado como sobrescrito de seção e em metadados estruturais. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+/* Metadado monoespaçado — anos, DOIs, contagens, colofão */
+.meta {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--color-text-subtle);
+}
+
+/* Título de seção — serifa de periódico, tamanho responsivo via clamp() */
 .section-title {
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
-  font-weight: 600;
+  font-size: clamp(1.9rem, 4vw, 2.9rem);
+  font-weight: 500;
   color: var(--color-text);
   margin-bottom: 0.5rem;
 }
 
 /* Subtítulo de seção */
 .section-subtitle {
-  font-size: 1.1rem;
+  font-size: 1.08rem;
   color: var(--color-text-muted);
   margin-bottom: 3rem;
-  max-width: 600px;
+  max-width: 60ch;
 }
 
-/* Traço dourado decorativo abaixo dos títulos */
+/* Filete de rubrica abaixo dos títulos — o marcador vermelho do sistema */
 .title-accent {
   display: block;
-  width: 3rem;
-  height: 3px;
+  width: 2.5rem;
+  height: 2px;
   background-color: var(--color-primary);
-  margin-top: 0.75rem;
+  margin-top: 0.9rem;
   margin-bottom: 2rem;
 }
 
-/* Card com fundo elevado e borda sutil */
+/* Card — superfície branca sobre o papel, com filete sutil */
 .card {
   background-color: var(--color-bg-elevated);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
   padding: 1.5rem;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.card:hover { border-color: var(--color-primary-muted); }
+.card:hover {
+  border-color: var(--color-primary-muted);
+  box-shadow: 0 1px 0 var(--color-border-strong), 0 12px 28px -18px rgba(26, 32, 48, 0.35);
+  transform: translateY(-2px);
+}
 
-/* Badge — pílula de texto para status e categorias */
+/* Linha de índice — usada na sumário (table of contents) de pesquisa */
+.index-row {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1.25rem;
+  align-items: baseline;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--color-border);
+  transition: padding-left 0.2s ease;
+}
+
+.index-row:last-child { border-bottom: 1px solid var(--color-border); }
+.index-row:hover { padding-left: 0.5rem; }
+
+.index-num {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  padding-top: 0.35rem;
+}
+
+/* Badge — pílula de texto para tipos e categorias */
 .badge {
   display: inline-block;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  padding: 0.18rem 0.55rem;
+  border-radius: 3px;
+  font-size: 0.68rem;
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.badge-primary { background-color: var(--color-primary); color: #000; }
+.badge-primary { background-color: var(--color-primary); color: #fff; }
 
 .badge-muted {
   background-color: var(--color-bg-subtle);
   color: var(--color-text-muted);
   border: 1px solid var(--color-border);
+}
+
+/* Botões */
+.btn-primary {
+  display: inline-block;
+  background-color: var(--color-primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.92rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-primary);
+  transition: background-color 0.15s ease;
+}
+
+.btn-primary:hover { background-color: var(--color-primary-hover); border-color: var(--color-primary-hover); }
+
+.btn-ghost {
+  display: inline-block;
+  background-color: transparent;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.92rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border-strong);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-ghost:hover { border-color: var(--color-text); background-color: var(--color-bg-subtle); }
+
+/* Link de texto sublinhado discreto — para links inline de corpo */
+.link-rubric {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--color-primary-muted);
+  transition: text-decoration-color 0.15s ease;
+}
+
+.link-rubric:hover { text-decoration-color: var(--color-primary); }
+
+
+/* =============================================================================
+   6. MOVIMENTO — reveal único no carregamento (página de rosto)
+   Respeita prefers-reduced-motion.
+============================================================================= */
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.rise { animation: rise 0.7s cubic-bezier(0.2, 0.6, 0.2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rise { animation: none; }
+  .card:hover { transform: none; }
 }

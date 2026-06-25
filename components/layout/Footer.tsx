@@ -7,7 +7,7 @@
  *   3. Copyright  — ano atual gerado dinamicamente + localização do grupo
  *
  * Dados lidos de lib/config.ts:
- *   - siteConfig.acronym    — sigla do grupo (ex: "LaFiM")
+ *   - siteConfig.acronym    — sigla do grupo (ex: "Template")
  *   - siteConfig.name       — nome completo do laboratório
  *   - siteConfig.department — departamento de vínculo
  *   - siteConfig.university — universidade
@@ -52,12 +52,13 @@ export default function Footer() {
           <p
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "1.1rem",
+              fontSize: "1.2rem",
               fontWeight: 600,
-              color: "var(--color-primary)", /* sigla em âmbar */
+              color: "var(--color-text)", /* sigla em tinta */
               marginBottom: "0.25rem",
             }}
           >
+            <span style={{ color: "var(--color-primary)", fontFamily: "var(--font-mono)", fontSize: "0.85rem", marginRight: "0.4rem" }}>§</span>
             {siteConfig.acronym}
           </p>
           <p style={{ color: "var(--color-text-muted)", fontSize: "0.9rem" }}>

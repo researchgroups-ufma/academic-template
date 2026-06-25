@@ -21,7 +21,7 @@ import ThemeProvider from "@/components/layout/ThemeProvider";
 import "./globals.css";
 
 // Metadados globais lidos do config.ts
-// title.template define o padrão para páginas internas: "Membros | LaFiM"
+// title.template define o padrão para páginas internas: "Membros | Template"
 export const metadata: Metadata = {
   title: {
     default: `${siteConfig.acronym} — ${siteConfig.university}`, // aba padrão
